@@ -97,6 +97,20 @@
                         </div>
                     </div>
 
+                    <markdown-toolbar for="markdown-textarea">
+                        <md-bold>bold</md-bold>
+                        <md-header>header</md-header>
+                        <md-italic>italic</md-italic>
+                        <md-quote>quote</md-quote>
+                        <md-code>code</md-code>
+                        <md-link>link</md-link>
+                        <md-unordered-list>unordered-list</md-unordered-list>
+                        <md-ordered-list>ordered-list</md-ordered-list>
+                        <md-task-list>task-list</md-task-list>
+                        <md-mention>mention</md-mention>
+                        <md-ref>ref</md-ref>
+                    </markdown-toolbar>
+                    
                     <div markdown-input class="flex flex-fill">
                         <textarea  id="markdown-editor-input"  name="markdown" rows="5"
                             @if($errors->has('markdown')) class="neg" @endif>@if(isset($model) || old('markdown')){{htmlspecialchars( old('markdown') ? old('markdown') : ($model->markdown === '' ? $model->html : $model->markdown))}}@endif</textarea>
