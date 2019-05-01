@@ -98,15 +98,15 @@
                     </div>
 
                     <markdown-toolbar for="markdown-textarea">
-                        <md-bold>bold</md-bold>
-                        <md-header>header</md-header>
-                        <md-italic>italic</md-italic>
-                        <md-quote>quote</md-quote>
-                        <md-code>code</md-code>
-                        <md-link>link</md-link>
-                        <md-unordered-list>unordered-list</md-unordered-list>
-                        <md-ordered-list>ordered-list</md-ordered-list>
-                        <md-task-list>task-list</md-task-list>
+                        <md-bold><i class="fas fa-bold"></i></md-bold>
+                        <md-header><i class="fas fa-heading"></i></md-header>
+                        <md-italic><i class="fas fa-italic"></i></md-italic>
+                        <md-quote><i class="fas fa-quote-right"></i></md-quote>
+                        <md-code><i class="fas fa-code"></i></md-code>
+                        <md-link><i class="fas fa-link"></i></md-link>
+                        <md-unordered-list><i class="fas fa-list-ul"></i></md-unordered-list>
+                        <md-ordered-list><i class="fas fa-list-ol"></i></md-ordered-list>
+                        <md-task-list><i class="fas fa-tasks"></i></md-task-list>
                         <md-mention>mention</md-mention>
                         <md-ref>ref</md-ref>
                     </markdown-toolbar>
