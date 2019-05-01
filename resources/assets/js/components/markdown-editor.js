@@ -1,3 +1,4 @@
+import '@github/markdown-toolbar-element';
 import MarkdownIt from "markdown-it";
 import mdTasksLists from 'markdown-it-task-lists';
 import code from '../services/code';
@@ -20,6 +21,7 @@ class MarkdownEditor {
         this.input = this.elem.querySelector('textarea');
         this.htmlInput = this.elem.querySelector('input[name=html]');
         this.cm = code.markdownEditor(this.input);
+        this.cm.getInputField().id = 'markdown-textarea';
 
         this.onMarkdownScroll = this.onMarkdownScroll.bind(this);
         this.init();

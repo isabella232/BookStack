@@ -36,6 +36,24 @@
 #markdown-editor {
   position: relative;
   z-index: 5;
+  markdown-toolbar {
+    padding: 5px;
+  }
+  markdown-toolbar > * {
+    border: solid 1px #666;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px 0px;
+    padding: 2px 5px;
+    text-align: center;
+  }
+  markdown-toolbar > *:hover {
+    background-color: #666;
+    color: #fff;
+  }
+  markdown-toolbar > * > i {
+    padding-left: 5px;
+  }
   #markdown-editor-input {
     font-style: normal;
     font-weight: 400;
