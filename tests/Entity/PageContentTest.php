@@ -71,51 +71,6 @@ class PageContentTest extends TestCase
         $pageResp->assertSee($content);
     }
 
-    public function test_page_revision_views_viewable()
-    {
-        $this->asEditor();
-
-        $pageRepo = app(PageRepo::class);
-        $page = Page::first();
-        $pageRepo->updatePage($page, $page->book_id, ['name' => 'updated page', 'html' => '<p>new content</p>', 'summary' => 'page revision testing']);
-        $pageRevision = $page->revisions->last();
-
-        $revisionView = $this->get($page->getUrl() . '/revisions/' . $pageRevision->id);
-        $revisionView->assertStatus(200);
-        $revisionView->assertSee('new content');
-
-        $revisionView = $this->get($page->getUrl() . '/revisions/' . $pageRevision->id . '/changes');
-        $revisionView->assertStatus(200);
-        $revisionView->assertSee('new content');
-    }
-
-    public function test_page_revision_restore_updates_content()
-    {
-        $this->asEditor();
-
-        $pageRepo = app(PageRepo::class);
-        $page = Page::first();
-        $pageRepo->updatePage($page, $page->book_id, ['name' => 'updated page abc123', 'html' => '<p>new contente def456</p>', 'summary' => 'initial page revision testing']);
-        $pageRepo->updatePage($page, $page->book_id, ['name' => 'updated page again', 'html' => '<p>new content</p>', 'summary' => 'page revision testing']);
-        $page =  Page::find($page->id);
-
-
-        $pageView = $this->get($page->getUrl());
-        $pageView->assertDontSee('abc123');
-        $pageView->assertDontSee('def456');
-
-        $revToRestore = $page->revisions()->where('name', 'like', '%abc123')->first();
-        $restoreReq = $this->get($page->getUrl() . '/revisions/' . $revToRestore->id . '/restore');
-        $page =  Page::find($page->id);
-
-        $restoreReq->assertStatus(302);
-        $restoreReq->assertRedirect($page->getUrl());
-
-        $pageView = $this->get($page->getUrl());
-        $pageView->assertSee('abc123');
-        $pageView->assertSee('def456');
-    }
-
     public function test_page_content_scripts_escaped_by_default()
     {
         $this->asEditor();
@@ -143,4 +98,37 @@ class PageContentTest extends TestCase
         $pageView->assertDontSee(htmlentities($script));
     }
 
+    public function test_duplicate_ids_does_not_break_page_render()
+    {
+        $this->asEditor();
+        $pageA = Page::first();
+        $pageB = Page::query()->where('id', '!=', $pageA->id)->first();
+
+        $content = '<ul id="bkmrk-xxx-%28"></ul> <ul id="bkmrk-xxx-%28"></ul>';
+        $pageA->html = $content;
+        $pageA->save();
+
+        $pageB->html = '<ul id="bkmrk-xxx-%28"></ul> <p>{{@'. $pageA->id .'#test}}</p>';
+        $pageB->save();
+
+        $pageView = $this->get($pageB->getUrl());
+        $pageView->assertSuccessful();
+    }
+
+    public function test_duplicate_ids_fixed_on_page_save()
+    {
+        $this->asEditor();
+        $page = Page::first();
+
+        $content = '<ul id="bkmrk-test"><li>test a</li><li><ul id="bkmrk-test"><li>test b</li></ul></li></ul>';
+        $pageSave = $this->put($page->getUrl(), [
+            'name' => $page->name,
+            'html' => $content,
+            'summary' => ''
+        ]);
+        $pageSave->assertRedirect();
+
+        $updatedPage = Page::where('id', '=', $page->id)->first();
+        $this->assertEquals(substr_count($updatedPage->html, "bkmrk-test\""), 1);
+    }
 }

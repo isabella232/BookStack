@@ -577,7 +577,7 @@ class PermissionService
                         $query2->where('has_permission_own', '=', 1)
                             ->where('created_by', '=', $userId);
                     });
-        }) ;
+            });
 
         if (!is_null($entityClass)) {
             $entityInstance = app()->make($entityClass);
@@ -704,7 +704,7 @@ class PermissionService
      * @param string $entityIdColumn
      * @param string $entityTypeColumn
      * @param string $action
-     * @return mixed
+     * @return QueryBuilder
      */
     public function filterRestrictedEntityRelations($query, $tableName, $entityIdColumn, $entityTypeColumn, $action = 'view')
     {
