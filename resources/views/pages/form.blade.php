@@ -107,8 +107,6 @@
                         <md-unordered-list><i class="fas fa-list-ul"></i></md-unordered-list>
                         <md-ordered-list><i class="fas fa-list-ol"></i></md-ordered-list>
                         <md-task-list><i class="fas fa-tasks"></i></md-task-list>
-                        <md-mention>mention</md-mention>
-                        <md-ref>ref</md-ref>
                     </markdown-toolbar>
                     
                     <div markdown-input class="flex flex-fill">
