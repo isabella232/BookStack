@@ -130,7 +130,7 @@ If you would like to report a security concern in a more confidential manner tha
 
 The BookStack source is provided under the MIT License.
 
-## Attribution
+## Attribution 
 
 The great people that have worked to build and improve BookStack can [be seen here](https://github.com/BookStackApp/BookStack/graphs/contributors).
 
