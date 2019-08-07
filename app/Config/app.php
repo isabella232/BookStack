@@ -46,13 +46,13 @@ return [
     'url' => env('APP_URL', '') === 'http://bookstack.dev' ? '' : env('APP_URL', ''),
 
     // Application timezone for back-end date functions.
-    'timezone' => 'UTC',
+    'timezone' => env('APP_TIMEZONE', 'UTC'),
 
     // Default locale to use
     'locale' => env('APP_LANG', 'en'),
 
     // Locales available
-    'locales' => ['en', 'ar', 'de', 'de_informal', 'es', 'es_AR', 'fr', 'nl', 'pt_BR', 'sk', 'cs', 'sv', 'kr', 'ja', 'pl', 'it', 'ru', 'uk', 'zh_CN', 'zh_TW'],
+    'locales' => ['en', 'ar', 'de', 'de_informal', 'es', 'es_AR', 'fr', 'hu', 'nl', 'pt_BR', 'sk', 'cs', 'sv', 'kr', 'ja', 'pl', 'it', 'ru', 'uk', 'zh_CN', 'zh_TW'],
 
     //  Application Fallback Locale
     'fallback_locale' => 'en',

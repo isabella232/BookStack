@@ -12,7 +12,6 @@ return [
     | as the size rules. Feel free to tweak each of these messages here.
     |
     */
-
     'accepted'             => ':attribute måste godkännas.',
     'active_url'           => ':attribute är inte en giltig URL.',
     'after'                => ':attribute måste vara efter :date.',
@@ -38,6 +37,7 @@ return [
     'filled'               => ':attribute är obligatoriskt.',
     'exists'               => 'Valt värde för :attribute är ogiltigt.',
     'image'                => ':attribute måste vara en bild.',
+    'image_extension'      => ':attribute måste ha ett giltigt filtillägg.',
     'in'                   => 'Vald :attribute är ogiltigt.',
     'integer'              => ':attribute måste vara en integer.',
     'ip'                   => ':attribute måste vara en giltig IP-adress.',
@@ -54,6 +54,7 @@ return [
         'string'  => ':attribute måste vara minst :min tecken.',
         'array'   => ':attribute måste ha minst :min poster.',
     ],
+    'no_double_extension'  => ':attribute får bara ha ett filtillägg.',
     'not_in'               => 'Vald :attribute är inte giltig',
     'numeric'              => ':attribute måste vara ett nummer.',
     'regex'                => ':attribute har ett ogiltigt format.',
@@ -74,6 +75,7 @@ return [
     'timezone'             => ':attribute måste vara en giltig tidszon.',
     'unique'               => ':attribute är upptaget',
     'url'                  => 'Formatet på :attribute är ogiltigt.',
+    'uploaded'             => 'Filen kunde inte laddas upp. Servern kanske inte tillåter filer med denna storlek.',
 
     /*
     |--------------------------------------------------------------------------
@@ -85,7 +87,6 @@ return [
     | specify a specific custom language line for a given attribute rule.
     |
     */
-
     'custom' => [
         'password-confirm' => [
             'required_with' => 'Lösenordet måste bekräftas',
@@ -102,7 +103,6 @@ return [
     | of "email". This simply helps us make messages a little cleaner.
     |
     */
-
     'attributes' => [],
 
 ];

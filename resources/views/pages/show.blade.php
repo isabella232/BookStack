@@ -11,22 +11,8 @@
     </div>
 
     <div class="content-wrap card">
-        <div class="page-content flex" page-display="{{ $page->id }}">
-
-            <div class="pointer-container" id="pointer">
-                <div class="pointer anim {{ userCan('page-update', $page) ? 'is-page-editable' : ''}}" >
-                    <span class="icon text-primary">@icon('link') @icon('include', ['style' => 'display:none;'])</span>
-                    <span class="input-group">
-                    <input readonly="readonly" type="text" id="pointer-url" placeholder="url">
-                    <button class="button icon" data-clipboard-target="#pointer-url" type="button" title="{{ trans('entities.pages_copy_link') }}">@icon('copy')</button>
-                </span>
-                    @if(userCan('page-update', $page))
-                        <a href="{{ $page->getUrl('/edit') }}" id="pointer-edit" data-edit-href="{{ $page->getUrl('/edit') }}"
-                           class="button icon heading-edit-icon" title="{{ trans('entities.pages_edit_content_link')}}">@icon('edit')</a>
-                    @endif
-                </div>
-            </div>
-
+        <div class="page-content" page-display="{{ $page->id }}">
+            @include('pages.pointer', ['page' => $page])
             @include('pages.page-display')
         </div>
     </div>
@@ -70,7 +56,7 @@
                 <div class="sidebar-page-nav menu">
                     @foreach($pageNav as $navItem)
                         <li class="page-nav-item h{{ $navItem['level'] }}">
-                            <a href="{{ $navItem['link'] }}">{{ $navItem['text'] }}</a>
+                            <a href="{{ $navItem['link'] }}" class="limit-text block">{{ $navItem['text'] }}</a>
                             <div class="primary-background sidebar-page-nav-bullet"></div>
                         </li>
                     @endforeach
@@ -171,7 +157,7 @@
                     <span>@icon('export')</span>
                     <span>{{ trans('entities.export') }}</span>
                 </div>
-                <ul class="wide">
+                <ul class="dropdown-menu wide">
                     <li><a href="{{ $page->getUrl('/export/html') }}" target="_blank">{{ trans('entities.export_html') }} <span class="text-muted float right">.html</span></a></li>
                     <li><a href="{{ $page->getUrl('/export/pdf') }}" target="_blank">{{ trans('entities.export_pdf') }} <span class="text-muted float right">.pdf</span></a></li>
                     <li><a href="{{ $page->getUrl('/export/plaintext') }}" target="_blank">{{ trans('entities.export_text') }} <span class="text-muted float right">.txt</span></a></li>

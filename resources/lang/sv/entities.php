@@ -9,6 +9,7 @@ return [
     'recently_updated_pages' => 'Sidor som uppdaterats nyligen',
     'recently_created_chapters' => 'Kapitel som skapats nyligen',
     'recently_created_books' => 'Böcker som skapats nyligen',
+    'recently_created_shelves' => 'Hyllor som skapats nyligen',
     'recently_update' => 'Nyligen uppdaterat',
     'recently_viewed' => 'Nyligen läst',
     'recent_activity' => 'Aktivitet',
@@ -52,11 +53,13 @@ return [
     'search_content_type' => 'Innehållstyp',
     'search_exact_matches' => 'Exakta matchningar',
     'search_tags' => 'Taggar',
+    'search_options' => 'Alternativ',
     'search_viewed_by_me' => 'Visade av mig',
     'search_not_viewed_by_me' => 'Ej visade av mig',
     'search_permissions_set' => 'Har anpassade rättigheter',
     'search_created_by_me' => 'Skapade av mig',
     'search_updated_by_me' => 'Uppdaterade av mig',
+    'search_date_options' => 'Datumalternativ',
     'search_updated_before' => 'Uppdaterade före',
     'search_updated_after' => 'Uppdaterade efter',
     'search_created_before' => 'Skapade före',
@@ -74,6 +77,7 @@ return [
     'books_popular' => 'Populära böcker',
     'books_recent' => 'Nya böcker',
     'books_new' => 'Nya böcker',
+    'books_new_action' => 'Ny bok',
     'books_popular_empty' => 'De mest populära böckerna kommer att visas här.',
     'books_new_empty' => 'De senaste böckerna som skapats kommer att visas här.',
     'books_create' => 'Skapa ny bok',
@@ -89,7 +93,6 @@ return [
     'books_permissions_updated' => 'Bokens rättigheter har uppdaterats',
     'books_empty_contents' => 'Det finns inga sidor eller kapitel i den här boken.',
     'books_empty_create_page' => 'Skapa en ny sida',
-    'books_empty_or' => 'eller',
     'books_empty_sort_current_book' => 'Sortera aktuell bok',
     'books_empty_add_chapter' => 'Lägg till kapitel',
     'books_permissions_active' => 'Anpassade rättigheter är i bruk',
@@ -97,6 +100,11 @@ return [
     'books_navigation' => 'Navigering',
     'books_sort' => 'Sortera bokens innehåll',
     'books_sort_named' => 'Sortera boken :bookName',
+    'books_sort_name' => 'Sortera utifrån namn',
+    'books_sort_created' => 'Sortera utifrån skapelse',
+    'books_sort_updated' => 'Sortera utifrån uppdatering',
+    'books_sort_chapters_first' => 'Kapitel först',
+    'books_sort_chapters_last' => 'Kapitel sist',
     'books_sort_show_other' => 'Visa andra böcker',
     'books_sort_save' => 'Spara ordning',
 
@@ -178,6 +186,8 @@ return [
     'pages_revisions_created_by' => 'Skapad av',
     'pages_revisions_date' => 'Revisionsdatum',
     'pages_revisions_number' => '#',
+    'pages_revisions_numbered' => 'Revision #:id',
+    'pages_revisions_numbered_changes' => 'Revision #:id ändringar',
     'pages_revisions_changelog' => 'Ändringslogg',
     'pages_revisions_changes' => 'Ändringar',
     'pages_revisions_current' => 'Nuvarande version',
@@ -199,10 +209,46 @@ return [
         'message' => ':start :time. Var försiktiga så att ni inte skriver över varandras ändringar!',
     ],
     'pages_draft_discarded' => 'Utkastet har tagits bort. Redigeringsverktyget har uppdaterats med aktuellt innehåll.',
+    'pages_specific' => 'Specifik sida',
+
+    /**
+     * Shelves
+     */
+    'shelf' => 'Hylla',
+    'shelves' => 'Hyllor',
+    'x_shelves' => ':count hylla|:count hyllor',
+    'shelves_long' => 'Bokhyllor',
+    'shelves_empty' => 'Du har inte skapat någon hylla',
+    'shelves_create' => 'Skapa ny hylla',
+    'shelves_popular' => 'Populära hyllor',
+    'shelves_new' => 'Nya hyllor',
+    'shelves_new_action' => 'Ny hylla',
+    'shelves_popular_empty' => 'De populäraste hyllorna kommer hamna här',
+    'shelves_new_empty' => 'De senast skapade hyllorna kommer hamna här',
+    'shelves_save' => 'Spara hylla',
+    'shelves_books' => 'Böcker i denna hylla',
+    'shelves_add_books' => 'Lägg till böcker till hyllan',
+    'shelves_drag_books' => 'Dra böcker hit för att lägga dem på hyllan',
+    'shelves_empty_contents' => 'Denna hylla har inga böcker än',
+    'shelves_edit_and_assign' => 'Redigera hyllan för att lägga till böcker',
+    'shelves_edit_named' => 'Ändra hyllan :name',
+    'shelves_edit' => 'Ändra bokhylla',
+    'shelves_delete' => 'Radera bokhylla',
+    'shelves_delete_named' => 'Radera bokhyllan :name',
+    'shelves_delete_explain' => "Detta kommer radera bokhyllan ':name'. Böckerna på hyllan kommer finnas kvar.",
+    'shelves_delete_confirmation' => 'Är du säker på att du vill radera hyllan?',
+    'shelves_permissions' => 'Bokhyllerättigheter',
+    'shelves_permissions_updated' => 'Bokhyllerättigheterna har ändrats',
+    'shelves_permissions_active' => 'Bokhyllerättigheterna är aktiva',
+    'shelves_copy_permissions_to_books' => 'Kopiera rättigheter till böcker',
+    'shelves_copy_permissions' => 'Kopiera rättigheter',
+    'shelves_copy_permissions_explain' => 'Detta kommer kopiera hyllans rättigheter till alla böcker på den. Se till att du har sparat alla ändringar innan du går vidare.',
+    'shelves_copy_permission_success' => 'Hyllans rättigheter har kopierats till :count böcker',
 
     /**
      * Editor sidebar
      */
+    'shelf_tags' => 'Hylltaggar',
     'page_tags' => 'Sidtaggar',
     'chapter_tags' => 'Kapiteltaggar',
     'book_tags' => 'Boktaggar',
@@ -245,6 +291,7 @@ return [
     'profile_not_created_pages' => ':userName har inte skapat några sidor',
     'profile_not_created_chapters' => ':userName har inte skapat några kapitel',
     'profile_not_created_books' => ':userName har inte skapat några böcker',
+    'profile_not_created_shelves' => ':userName har inte skapat några hyllor',
 
     /**
      * Comments
@@ -271,5 +318,6 @@ return [
      */
     'revision_delete_confirm' => 'Är du säker på att du vill radera den här versionen?',
     'revision_delete_success' => 'Revisionen raderad',
-    'revision_cannot_delete_latest' => 'Det går inte att ta bort den senaste versionen.'
+    'revision_cannot_delete_latest' => 'Det går inte att ta bort den senaste versionen.',
+    'revision_restore_confirm' => 'Är du säker på att du vill använda denna revision? Det nuvarande innehållet kommer att ersättas.'
 ];

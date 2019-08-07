@@ -10,6 +10,7 @@ return [
     'save' => 'Spara',
     'continue' => 'Fortsätt',
     'select' => 'Välj',
+    'toggle_all' => 'Ändra alla',
     'more' => 'Mer',
 
     /**
@@ -20,12 +21,13 @@ return [
     'role' => 'Roll',
     'cover_image' => 'Omslagsbild',
     'cover_image_description' => 'Bilden bör vara cirka 440x250px stor.',
-    
+
     /**
      * Actions
      */
     'actions' => 'Åtgärder',
     'view' => 'Visa',
+    'view_all' => 'Visa alla',
     'create' => 'Skapa',
     'update' => 'Uppdatera',
     'edit' => 'Redigera',
@@ -41,6 +43,13 @@ return [
     'add' => 'Lägg till',
 
     /**
+     * Sort Options
+     */
+    'sort_name' => 'Namn',
+    'sort_created_at' => 'Skapad',
+    'sort_updated_at' => 'Uppdaterad',
+
+    /**
      * Misc
      */
     'deleted_user' => 'Borttagen användare',
@@ -52,12 +61,19 @@ return [
     'details' => 'Information',
     'grid_view' => 'Rutnätsvy',
     'list_view' => 'Listvy',
+    'default' => 'Förvald',
 
     /**
      * Header
      */
     'view_profile' => 'Visa profil',
     'edit_profile' => 'Redigera profil',
+
+    /**
+     * Layout tabs
+     */
+    'tab_info' => 'Information',
+    'tab_content' => 'Innehåll',
 
     /**
      * Email Content

@@ -29,6 +29,7 @@ return [
     'app_editor_desc' => 'Select which editor will be used by all users to edit pages.',
     'app_custom_html' => 'Custom HTML Head Content',
     'app_custom_html_desc' => 'Any content added here will be inserted into the bottom of the <head> section of every page. This is handy for overriding styles or adding analytics code.',
+    'app_custom_html_disabled_notice' => 'Custom HTML head content is disabled on this settings page to ensure any breaking changes can be reverted.',
     'app_logo' => 'Application Logo',
     'app_logo_desc' => 'This image should be 43px in height. <br>Large images will be scaled down.',
     'app_primary_color' => 'Application Primary Color',
@@ -125,7 +126,7 @@ return [
     'users_preferred_language' => 'Preferred Language',
     'users_preferred_language_desc' => 'This option will change the language used for the user-interface of the application. This will not affect any user-created content.',
     'users_social_accounts' => 'Social Accounts',
-    'users_social_accounts_info' => 'Here you can connect your other accounts for quicker and easier login. Disconnecting an account here does not previously authorized access. Revoke access from your profile settings on the connected social account.',
+    'users_social_accounts_info' => 'Here you can connect your other accounts for quicker and easier login. Disconnecting an account here does not revoke previously authorized access. Revoke access from your profile settings on the connected social account.',
     'users_social_connect' => 'Connect Account',
     'users_social_disconnect' => 'Disconnect Account',
     'users_social_connected' => ':socialAccount account was successfully attached to your profile.',
@@ -155,7 +156,8 @@ return [
         'ru' => 'Русский',
         'uk' => 'Українська',
         'zh_CN' => '简体中文',
-        'zh_TW' => '繁體中文'
+	'zh_TW' => '繁體中文',
+	'hu' => 'Magyar'
     ]
     //!////////////////////////////////
 ];

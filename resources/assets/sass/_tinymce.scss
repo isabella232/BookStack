@@ -47,6 +47,8 @@
       display: flex !important;
       flex-direction: column;
       align-items: stretch;
+      -webkit-overflow-scrolling:touch;
+      overflow:auto;
       iframe {
         flex: 1;
       }
@@ -55,6 +57,10 @@
 }
 .page-content.mce-content-body p {
   line-height: 1.6;
+}
+
+.page-content.mce-content-body {
+  padding-top: 16px;
 }
 
 // Fix to prevent 'No color' option from not being clickable.

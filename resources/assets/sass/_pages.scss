@@ -8,7 +8,7 @@
   .edit-area {
     flex: 1;
     flex-direction: column;
-    z-index: 1;
+    z-index: 10;
   }
 
   .mce-tinymce {
@@ -20,11 +20,14 @@
   }
 }
 
-@include smaller-than($l) {
+body.mce-fullscreen .page-editor .edit-area {
+  z-index: 12;
+}
+
+@include smaller-than($s) {
   .page-edit-toolbar {
     overflow-x: scroll;
     overflow-y: visible;
-    z-index: 4;
   }
   .page-edit-toolbar .grid.third {
     display: block;
@@ -35,21 +38,21 @@
   }
 }
 
-@include smaller-than($l) {
-  .page-edit-toolbar #save-button {
-    position: fixed;
-    z-index: 30;
-    background-color: #FFF;
-    border-radius: 50%;
-    width: 42px;
-    height: 42px;
-    font-size: 16px;
-    right: $-m;
-    bottom: $-xs;
-    box-shadow: $bs-med;
-    span {
-      display: none;
-    }
+.page-save-mobile-button {
+  position: fixed;
+  z-index: 30;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  font-size: 24px;
+  right: $-m;
+  bottom: $-s;
+  box-shadow: $bs-hover;
+  background-color: currentColor;
+  text-align: center;
+  svg {
+    fill: #FFF;
+    margin-right: 0;
   }
 }
 
@@ -77,7 +80,7 @@
   }
   img.align-left, table.align-left {
     float: left !important;
-    margin: $-xs $-s $-xs 0;
+    margin: $-xs $-m $-m 0;
   }
   .align-right {
     text-align: right !important;
@@ -142,10 +145,12 @@
 }
 .pointer {
   border: 1px solid #CCC;
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-items: center;
   padding: $-s $-s;
   border-radius: 4px;
-  box-shadow: 0 0 8px 1px rgba(212, 209, 209, 0.35);
+  box-shadow: 0 0 12px 1px rgba(212, 209, 209, 0.3);
   position: absolute;
   top: -60px;
   background-color:#FFF;
@@ -172,13 +177,6 @@
     border-right: 1px solid #CCC;
     z-index: 56;
   }
-  input {
-    background-color: #FFF;
-    border: 1px solid #DDD;
-    color: #666;
-    width: 172px;
-    z-index: 40;
-  }
   input, button, a {
     position: relative;
     border-radius: 0;
@@ -187,14 +185,20 @@
     vertical-align: top;
     padding: 5px 16px;
   }
-  > i {
-    color: #888;
-    font-size: 18px;
-    padding-top: 4px;
+  input {
+    background-color: #FFF;
+    border: 1px solid #DDD;
+    color: #666;
+    width: 172px;
+    z-index: 40;
+    padding: 5px 10px;
   }
   span.icon {
+    fill: #444;
     cursor: pointer;
     user-select: none;
+    display: inline-block;
+    line-height: 1;
   }
   .input-group .button {
     line-height: 1;
@@ -202,11 +206,8 @@
     box-shadow: none;
   }
   a.button {
-    margin: 0 0 0 0;
-
-    &:hover {
-      fill: #fff;
-    }
+    margin: 0;
+    color: #FFF;
   }
   .svg-icon {
     width: 1.2em;

@@ -8,11 +8,20 @@ import DrawIO from "../services/drawio";
  * @param editor
  */
 function editorPaste(event, editor, wysiwygComponent) {
-    if (!event.clipboardData || !event.clipboardData.items) return;
+    const clipboardItems = event.clipboardData.items;
+    if (!event.clipboardData || !clipboardItems) return;
 
-    for (let clipboardItem of event.clipboardData.items) {
-        if (clipboardItem.type.indexOf("image") === -1) continue;
-        event.preventDefault();
+    // Don't handle if clipboard includes text content
+    for (let clipboardItem of clipboardItems) {
+        if (clipboardItem.type.includes('text/')) {
+            return;
+        }
+    }
+
+    for (let clipboardItem of clipboardItems) {
+        if (!clipboardItem.type.includes("image")) {
+            continue;
+        }
 
         const id = "image-" + Math.random().toString(16).slice(2);
         const loadingImage = window.baseUrl('/loading.gif');
@@ -53,7 +62,7 @@ async function uploadImageFile(file, wysiwygComponent) {
     formData.append('file', file, remoteFilename);
     formData.append('uploaded_to', wysiwygComponent.pageId);
 
-    const resp = await window.$http.post(window.baseUrl('/images/gallery/upload'), formData);
+    const resp = await window.$http.post(window.baseUrl('/images/gallery'), formData);
     return resp.data;
 }
 
@@ -159,23 +168,24 @@ function codePlugin() {
         });
     }
 
-    function codeMirrorContainerToPre($codeMirrorContainer) {
-        let textArea = $codeMirrorContainer[0].querySelector('textarea');
-        let code = textArea.textContent;
-        let lang = $codeMirrorContainer[0].getAttribute('data-lang');
+    function codeMirrorContainerToPre(codeMirrorContainer) {
+        const textArea = codeMirrorContainer.querySelector('textarea');
+        const code = textArea.textContent;
+        const lang = codeMirrorContainer.getAttribute('data-lang');
 
-        $codeMirrorContainer.removeAttr('contentEditable');
-        let $pre = $('<pre></pre>');
-        $pre.append($('<code></code>').each((index, elem) => {
-            // Needs to be textContent since innerText produces BR:s
-            elem.textContent = code;
-        }).attr('class', `language-${lang}`));
-        $codeMirrorContainer.replaceWith($pre);
+        codeMirrorContainer.removeAttribute('contentEditable');
+        const pre = document.createElement('pre');
+        const codeElem = document.createElement('code');
+        codeElem.classList.add(`language-${lang}`);
+        codeElem.textContent = code;
+        pre.appendChild(codeElem);
+
+        codeMirrorContainer.parentElement.replaceChild(pre, codeMirrorContainer);
     }
 
     window.tinymce.PluginManager.add('codeeditor', function(editor, url) {
 
-        let $ = editor.$;
+        const $ = editor.$;
 
         editor.addButton('codeeditor', {
             text: 'Code block',
@@ -189,10 +199,8 @@ function codePlugin() {
 
         // Convert
         editor.on('PreProcess', function (e) {
-            $('div.CodeMirrorContainer', e.node).
-            each((index, elem) => {
-                let $elem = $(elem);
-                codeMirrorContainerToPre($elem);
+            $('div.CodeMirrorContainer', e.node).each((index, elem) => {
+                codeMirrorContainerToPre(elem);
             });
         });
 
@@ -208,10 +216,10 @@ function codePlugin() {
             $('.CodeMirrorContainer').filter((index ,elem) => {
                 return typeof elem.querySelector('.CodeMirror').CodeMirror === 'undefined';
             }).each((index, elem) => {
-                codeMirrorContainerToPre($(elem));
+                codeMirrorContainerToPre(elem);
             });
 
-            let codeSamples = $('body > pre').filter((index, elem) => {
+            const codeSamples = $('body > pre').filter((index, elem) => {
                 return elem.contentEditable !== "false";
             });
 
@@ -257,39 +265,38 @@ function drawIoPlugin() {
         DrawIO.show(drawingInit, updateContent);
     }
 
-    function updateContent(pngData) {
-        let id = "image-" + Math.random().toString(16).slice(2);
-        let loadingImage = window.baseUrl('/loading.gif');
-        let data = {
-            image: pngData,
-            uploaded_to: Number(document.getElementById('page-editor').getAttribute('page-id'))
-        };
+    async function updateContent(pngData) {
+        const id = "image-" + Math.random().toString(16).slice(2);
+        const loadingImage = window.baseUrl('/loading.gif');
+        const pageId = Number(document.getElementById('page-editor').getAttribute('page-id'));
 
         // Handle updating an existing image
         if (currentNode) {
             DrawIO.close();
             let imgElem = currentNode.querySelector('img');
-            window.$http.post(window.baseUrl(`/images/drawing/upload`), data).then(resp => {
-                pageEditor.dom.setAttrib(imgElem, 'src', resp.data.url);
-                pageEditor.dom.setAttrib(currentNode, 'drawio-diagram', resp.data.id);
-            }).catch(err => {
+            try {
+                const img = await DrawIO.upload(pngData, pageId);
+                pageEditor.dom.setAttrib(imgElem, 'src', img.url);
+                pageEditor.dom.setAttrib(currentNode, 'drawio-diagram', img.id);
+            } catch (err) {
                 window.$events.emit('error', trans('errors.image_upload_error'));
                 console.log(err);
-            });
+            }
             return;
         }
 
-        setTimeout(() => {
+        setTimeout(async () => {
             pageEditor.insertContent(`<div drawio-diagram contenteditable="false"><img src="${loadingImage}" id="${id}"></div>`);
             DrawIO.close();
-            window.$http.post(window.baseUrl('/images/drawing/upload'), data).then(resp => {
-                pageEditor.dom.setAttrib(id, 'src', resp.data.url);
-                pageEditor.dom.get(id).parentNode.setAttribute('drawio-diagram', resp.data.id);
-            }).catch(err => {
+            try {
+                const img = await DrawIO.upload(pngData, pageId);
+                pageEditor.dom.setAttrib(id, 'src', img.url);
+                pageEditor.dom.get(id).parentNode.setAttribute('drawio-diagram', img.id);
+            } catch (err) {
                 pageEditor.dom.remove(id);
                 window.$events.emit('error', trans('errors.image_upload_error'));
                 console.log(err);
-            });
+            }
         }, 5);
     }
 
@@ -300,9 +307,7 @@ function drawIoPlugin() {
         }
 
         let drawingId = currentNode.getAttribute('drawio-diagram');
-        return window.$http.get(window.baseUrl(`/images/base64/${drawingId}`)).then(resp => {
-            return `data:image/png;base64,${resp.data.content}`;
-        });
+        return DrawIO.load(drawingId);
     }
 
     window.tinymce.PluginManager.add('drawio', function(editor, url) {
@@ -335,7 +340,7 @@ function drawIoPlugin() {
         });
 
         editor.on('SetContent', function () {
-            let drawings = editor.$('body > div[drawio-diagram]');
+            const drawings = editor.$('body > div[drawio-diagram]');
             if (!drawings.length) return;
 
             editor.undoManager.transact(function () {
@@ -466,9 +471,10 @@ class WysiwygEditor {
 
                 if (type === 'file') {
                     window.EntitySelectorPopup.show(function(entity) {
-                        let originalField = win.document.getElementById(field_name);
+                        const originalField = win.document.getElementById(field_name);
                         originalField.value = entity.link;
-                        $(originalField).closest('.mce-form').find('input').eq(2).val(entity.name);
+                        const mceForm = originalField.closest('.mce-form');
+                        mceForm.querySelectorAll('input')[2].value = entity.name;
                     });
                 }
 

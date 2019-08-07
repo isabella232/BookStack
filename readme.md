@@ -24,9 +24,7 @@ In regards to development philosophy, BookStack has a relaxed, open & positive a
 
 Below is a high-level road map view for BookStack to provide a sense of direction of where the project is going. This can change at any point and does not reflect many features and improvements that will also be included as part of the journey along this road map. For more granular detail of what will be included in upcoming releases you can review the project milestones as defined in the "Release Process" section below.
 
-- **Design Revamp** *[(In Progress)](https://github.com/BookStackApp/BookStack/pull/1153)*
-    - *A more organised modern design to clean things up, make BookStack more efficient to use and increase mobile usability.*
-- **Platform REST API**
+- **Platform REST API** *(In Design)*
     - *A REST API covering, at minimum, control of core content models (Books, Chapters, Pages) for automation and platform extension.*
 - **Editor Alignment & Review**
     - *Review the page editors with goal of achieving increased interoperability & feature parity while also considering collaborative editing potential.*
@@ -65,7 +63,7 @@ npm run production
 npm run dev
 ```
 
-BookStack has many integration tests that use Laravel's built-in testing capabilities which makes use of PHPUnit. To use you will need PHPUnit 6 installed and accessible via command line, Directly running the composer-installed version will not work. There is a `mysql_testing` database defined within the app config which is what is used by PHPUnit. This database is set with the following database name, user name and password defined as `bookstack-test`. You will have to create that database and credentials before testing.
+BookStack has many integration tests that use Laravel's built-in testing capabilities which makes use of PHPUnit. There is a `mysql_testing` database defined within the app config which is what is used by PHPUnit. This database is set with the database name, user name and password all defined as `bookstack-test`. You will have to create that database and that set of credentials before testing.
 
 The testing database will also need migrating and seeding beforehand. This can be done with the following commands:
 
@@ -74,7 +72,7 @@ php artisan migrate --database=mysql_testing
 php artisan db:seed --class=DummyContentSeeder --database=mysql_testing
 ```
 
-Once done you can run `phpunit` in the application root directory to run all tests.
+Once done you can run `php vendor/bin/phpunit` in the application root directory to run all tests.
 
 ## Translations
 
@@ -137,16 +135,13 @@ The great people that have worked to build and improve BookStack can [be seen he
 These are the great open-source projects used to help build BookStack:
 
 * [Laravel](http://laravel.com/)
-* [jQuery](https://jquery.com/)
 * [TinyMCE](https://www.tinymce.com/)
 * [CodeMirror](https://codemirror.net)
 * [Vue.js](http://vuejs.org/)
-* [Axios](https://github.com/mzabriskie/axios)
-* [jQuery Sortable](https://johnny.github.io/jquery-sortable/)
+* [Sortable](https://github.com/SortableJS/Sortable) & [Vue.Draggable](https://github.com/SortableJS/Vue.Draggable)
 * [Google Material Icons](https://material.io/icons/)
 * [Dropzone.js](http://www.dropzonejs.com/)
 * [clipboard.js](https://clipboardjs.com/)
-* [TinyColorPicker](http://www.dematte.at/tinyColorPicker/index.html)
 * [markdown-it](https://github.com/markdown-it/markdown-it) and [markdown-it-task-lists](https://github.com/revin/markdown-it-task-lists)
 * [BarryVD](https://github.com/barryvdh)
     * [Debugbar](https://github.com/barryvdh/laravel-debugbar)

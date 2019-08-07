@@ -9,6 +9,7 @@ use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Contracts\Filesystem\Factory as FileSystem;
 use Intervention\Image\Exception\NotSupportedException;
 use Intervention\Image\ImageManager;
+use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ImageService extends UploadService
@@ -44,9 +45,9 @@ class ImageService extends UploadService
      */
     protected function getStorage($type = '')
     {
-        $storageType = config('filesystems.default');
+        $storageType = config('filesystems.images');
 
-        // Override default location if set to local public to ensure not visible.
+        // Ensure system images (App logo) are uploaded to a public space
         if ($type === 'system' && $storageType === 'local_secure') {
             $storageType = 'local';
         }
@@ -57,15 +58,29 @@ class ImageService extends UploadService
     /**
      * Saves a new image from an upload.
      * @param UploadedFile $uploadedFile
-     * @param  string $type
+     * @param string $type
      * @param int $uploadedTo
+     * @param int|null $resizeWidth
+     * @param int|null $resizeHeight
+     * @param bool $keepRatio
      * @return mixed
      * @throws ImageUploadException
      */
-    public function saveNewFromUpload(UploadedFile $uploadedFile, $type, $uploadedTo = 0)
-    {
+    public function saveNewFromUpload(
+        UploadedFile $uploadedFile,
+        string $type,
+        int $uploadedTo = 0,
+        int $resizeWidth = null,
+        int $resizeHeight = null,
+        bool $keepRatio = true
+    ) {
         $imageName = $uploadedFile->getClientOriginalName();
         $imageData = file_get_contents($uploadedFile->getRealPath());
+
+        if ($resizeWidth !== null || $resizeHeight !== null) {
+            $imageData = $this->resizeImage($imageData, $resizeWidth, $resizeHeight, $keepRatio);
+        }
+
         return $this->saveNew($imageName, $imageData, $type, $uploadedTo);
     }
 
@@ -122,7 +137,7 @@ class ImageService extends UploadService
         $secureUploads = setting('app-secure-images');
         $imageName = str_replace(' ', '-', $imageName);
 
-        $imagePath = '/uploads/images/' . $type . '/' . Date('Y-m-M') . '/';
+        $imagePath = '/uploads/images/' . $type . '/' . Date('Y-m') . '/';
 
         while ($storage->exists($imagePath . $imageName)) {
             $imageName = str_random(3) . $imageName;
@@ -201,8 +216,28 @@ class ImageService extends UploadService
             return $this->getPublicUrl($thumbFilePath);
         }
 
+        $thumbData = $this->resizeImage($storage->get($imagePath), $width, $height, $keepRatio);
+
+        $storage->put($thumbFilePath, $thumbData);
+        $storage->setVisibility($thumbFilePath, 'public');
+        $this->cache->put('images-' . $image->id . '-' . $thumbFilePath, $thumbFilePath, 60 * 72);
+
+        return $this->getPublicUrl($thumbFilePath);
+    }
+
+    /**
+     * Resize image data.
+     * @param string $imageData
+     * @param int $width
+     * @param int $height
+     * @param bool $keepRatio
+     * @return string
+     * @throws ImageUploadException
+     */
+    protected function resizeImage(string $imageData, $width = 220, $height = null, bool $keepRatio = true)
+    {
         try {
-            $thumb = $this->imageTool->make($storage->get($imagePath));
+            $thumb = $this->imageTool->make($imageData);
         } catch (Exception $e) {
             if ($e instanceof \ErrorException || $e instanceof NotSupportedException) {
                 throw new ImageUploadException(trans('errors.cannot_create_thumbs'));
@@ -211,20 +246,14 @@ class ImageService extends UploadService
         }
 
         if ($keepRatio) {
-            $thumb->resize($width, null, function ($constraint) {
+            $thumb->resize($width, $height, function ($constraint) {
                 $constraint->aspectRatio();
                 $constraint->upsize();
             });
         } else {
             $thumb->fit($width, $height);
         }
-
-        $thumbData = (string)$thumb->encode();
-        $storage->put($thumbFilePath, $thumbData);
-        $storage->setVisibility($thumbFilePath, 'public');
-        $this->cache->put('images-' . $image->id . '-' . $thumbFilePath, $thumbFilePath, 60 * 72);
-
-        return $this->getPublicUrl($thumbFilePath);
+        return (string)$thumb->encode();
     }
 
     /**
@@ -306,6 +335,7 @@ class ImageService extends UploadService
         $image = $this->saveNewFromUrl($userAvatarUrl, 'user', $imageName);
         $image->created_by = $user->id;
         $image->updated_by = $user->id;
+        $image->uploaded_to = $user->id;
         $image->save();
 
         return $image;
@@ -387,7 +417,7 @@ class ImageService extends UploadService
         $isLocal = strpos(trim($uri), 'http') !== 0;
 
         // Attempt to find local files even if url not absolute
-        $base = baseUrl('/');
+        $base = url('/');
         if (!$isLocal && strpos($uri, $base) === 0) {
             $isLocal = true;
             $uri = str_replace($base, '', $uri);
@@ -412,7 +442,12 @@ class ImageService extends UploadService
             return null;
         }
 
-        return 'data:image/' . pathinfo($uri, PATHINFO_EXTENSION) . ';base64,' . base64_encode($imageData);
+        $extension = pathinfo($uri, PATHINFO_EXTENSION);
+        if ($extension === 'svg') {
+            $extension = 'svg+xml';
+        }
+
+        return 'data:image/' . $extension . ';base64,' . base64_encode($imageData);
     }
 
     /**
@@ -428,7 +463,7 @@ class ImageService extends UploadService
             // Get the standard public s3 url if s3 is set as storage type
             // Uses the nice, short URL if bucket name has no periods in otherwise the longer
             // region-based url will be used to prevent http issues.
-            if ($storageUrl == false && config('filesystems.default') === 's3') {
+            if ($storageUrl == false && config('filesystems.images') === 's3') {
                 $storageDetails = config('filesystems.disks.s3');
                 if (strpos($storageDetails['bucket'], '.') === false) {
                     $storageUrl = 'https://' . $storageDetails['bucket'] . '.s3.amazonaws.com';
@@ -439,7 +474,7 @@ class ImageService extends UploadService
             $this->storageUrl = $storageUrl;
         }
 
-        $basePath = ($this->storageUrl == false) ? baseUrl('/') : $this->storageUrl;
+        $basePath = ($this->storageUrl == false) ? url('/') : $this->storageUrl;
         return rtrim($basePath, '/') . $filePath;
     }
 }

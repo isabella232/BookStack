@@ -10,7 +10,7 @@
                 <h5>{{ trans('errors.sorry_page_not_found') }}</h5>
             </div>
             <div class="text-right">
-                <a href="{{ baseUrl('/') }}" class="button outline">{{ trans('errors.return_home') }}</a>
+                <a href="{{ url('/') }}" class="button outline">{{ trans('errors.return_home') }}</a>
             </div>
         </div>
 
@@ -20,7 +20,7 @@
         <div class="grid third gap-xxl">
             <div>
                 <div class="card mb-xl">
-                    <h3>{{ trans('entities.pages_popular') }}</h3>
+                    <h3 class="card-title">{{ trans('entities.pages_popular') }}</h3>
                     <div class="px-m">
                         @include('partials.entity-list', ['entities' => Views::getPopular(10, 0, 'page'), 'style' => 'compact'])
                     </div>
@@ -28,7 +28,7 @@
             </div>
             <div>
                 <div class="card mb-xl">
-                    <h3>{{ trans('entities.books_popular') }}</h3>
+                    <h3 class="card-title">{{ trans('entities.books_popular') }}</h3>
                     <div class="px-m">
                         @include('partials.entity-list', ['entities' => Views::getPopular(10, 0, 'book'), 'style' => 'compact'])
                     </div>
@@ -36,7 +36,7 @@
             </div>
             <div>
                 <div class="card mb-xl">
-                    <h3>{{ trans('entities.chapters_popular') }}</h3>
+                    <h3 class="card-title">{{ trans('entities.chapters_popular') }}</h3>
                     <div class="px-m">
                         @include('partials.entity-list', ['entities' => Views::getPopular(10, 0, 'chapter'), 'style' => 'compact'])
                     </div>

@@ -2,6 +2,7 @@ import '@github/markdown-toolbar-element';
 import MarkdownIt from "markdown-it";
 import mdTasksLists from 'markdown-it-task-lists';
 import code from '../services/code';
+import {debounce} from "../services/util";
 
 import DrawIO from "../services/drawio";
 
@@ -106,14 +107,11 @@ class MarkdownEditor {
     }
 
     onMarkdownScroll(lineCount) {
-        let elems = this.display.children;
+        const elems = this.display.children;
         if (elems.length <= lineCount) return;
 
-        let topElem = (lineCount === -1) ? elems[elems.length-1] : elems[lineCount];
-        // TODO - Replace jQuery
-        $(this.display).animate({
-            scrollTop: topElem.offsetTop
-        }, {queue: false, duration: 200, easing: 'linear'});
+        const topElem = (lineCount === -1) ? elems[elems.length-1] : elems[lineCount];
+        topElem.scrollIntoView({ block: 'start', inline: 'nearest', behavior: 'smooth'});
     }
 
     codeMirrorSetup() {
@@ -162,8 +160,7 @@ class MarkdownEditor {
             this.updateAndRender();
         });
 
-        // Handle scroll to sync display view
-        cm.on('scroll', instance => {
+        const onScrollDebounced = debounce((instance) => {
             // Thanks to http://liuhao.im/english/2015/11/10/the-sync-scroll-of-markdown-editor-in-javascript.html
             let scroll = instance.getScrollInfo();
             let atEnd = scroll.top + scroll.clientHeight === scroll.height;
@@ -178,13 +175,29 @@ class MarkdownEditor {
             let doc = parser.parseFromString(this.markdown.render(range), 'text/html');
             let totalLines = doc.documentElement.querySelectorAll('body > *');
             this.onMarkdownScroll(totalLines.length);
+        }, 100);
+
+        // Handle scroll to sync display view
+        cm.on('scroll', instance => {
+            onScrollDebounced(instance);
         });
 
         // Handle image paste
         cm.on('paste', (cm, event) => {
-            if (!event.clipboardData || !event.clipboardData.items) return;
-            for (let i = 0; i < event.clipboardData.items.length; i++) {
-                uploadImage(event.clipboardData.items[i].getAsFile());
+            const clipboardItems = event.clipboardData.items;
+            if (!event.clipboardData || !clipboardItems) return;
+
+            // Don't handle if clipboard includes text content
+            for (let clipboardItem of clipboardItems) {
+                if (clipboardItem.type.includes('text/')) {
+                    return;
+                }
+            }
+
+            for (let clipboardItem of clipboardItems) {
+                if (clipboardItem.type.includes("image")) {
+                    uploadImage(clipboardItem.getAsFile());
+                }
             }
         });
 
@@ -300,7 +313,7 @@ class MarkdownEditor {
             formData.append('file', file, remoteFilename);
             formData.append('uploaded_to', context.pageId);
 
-            window.$http.post('/images/gallery/upload', formData).then(resp => {
+            window.$http.post('/images/gallery', formData).then(resp => {
                 const newContent = `[![${selectedText}](${resp.data.thumbs.display})](${resp.data.url})`;
                 replaceContent(placeHolderText, newContent);
             }).catch(err => {
@@ -368,7 +381,7 @@ class MarkdownEditor {
                 uploaded_to: Number(document.getElementById('page-editor').getAttribute('page-id'))
             };
 
-            window.$http.post(window.baseUrl('/images/drawing/upload'), data).then(resp => {
+            window.$http.post(window.baseUrl('/images/drawio'), data).then(resp => {
                 this.insertDrawing(resp.data, cursorPos);
                 DrawIO.close();
             }).catch(err => {
@@ -396,9 +409,7 @@ class MarkdownEditor {
         const drawingId = imgContainer.getAttribute('drawio-diagram');
 
         DrawIO.show(() => {
-            return window.$http.get(window.baseUrl(`/images/base64/${drawingId}`)).then(resp => {
-                return `data:image/png;base64,${resp.data.content}`;
-            });
+            return DrawIO.load(drawingId);
         }, (pngData) => {
 
             let data = {
@@ -406,7 +417,7 @@ class MarkdownEditor {
                 uploaded_to: Number(document.getElementById('page-editor').getAttribute('page-id'))
             };
 
-            window.$http.post(window.baseUrl(`/images/drawing/upload`), data).then(resp => {
+            window.$http.post(window.baseUrl(`/images/drawio`), data).then(resp => {
                 let newText = `<div drawio-diagram="${resp.data.id}"><img src="${resp.data.url}"></div>`;
                 let newContent = this.cm.getValue().split('\n').map(line => {
                     if (line.indexOf(`drawio-diagram="${drawingId}"`) !== -1) {

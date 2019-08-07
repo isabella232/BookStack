@@ -67,6 +67,9 @@ class HomeController extends Controller
 
         if ($homepageOption === 'bookshelves') {
             $shelves = $this->entityRepo->getAllPaginated('bookshelf', 18, $commonData['sort'], $commonData['order']);
+            foreach ($shelves as $shelf) {
+                $shelf->books = $this->entityRepo->getBookshelfChildren($shelf);
+            }
             $data = array_merge($commonData, ['shelves' => $shelves]);
             return view('common.home-shelves', $data);
         }
@@ -86,35 +89,6 @@ class HomeController extends Controller
         }
 
         return view('common.home', $commonData);
-    }
-
-    /**
-     * Get a js representation of the current translations
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
-     * @throws \Exception
-     */
-    public function getTranslations()
-    {
-        $locale = app()->getLocale();
-        $cacheKey = 'GLOBAL_TRANSLATIONS_' . $locale;
-
-        if (cache()->has($cacheKey) && config('app.env') !== 'development') {
-            $resp = cache($cacheKey);
-        } else {
-            $translations = [
-                // Get only translations which might be used in JS
-                'common' => trans('common'),
-                'components' => trans('components'),
-                'entities' => trans('entities'),
-                'errors' => trans('errors')
-            ];
-            $resp = 'window.translations = ' . json_encode($translations);
-            cache()->put($cacheKey, $resp, 120);
-        }
-
-        return response($resp, 200, [
-            'Content-Type' => 'application/javascript'
-        ]);
     }
 
     /**

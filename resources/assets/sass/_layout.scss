@@ -59,7 +59,7 @@
 }
 
 @include smaller-than($m) {
-  .grid.third {
+  .grid.third:not(.no-break) {
     grid-template-columns: 1fr 1fr;
   }
   .grid.half:not(.no-break), .grid.left-focus:not(.no-break), .grid.right-focus:not(.no-break) {
@@ -81,7 +81,7 @@
 }
 
 @include smaller-than($s) {
-  .grid.third {
+  .grid.third:not(.no-break) {
     grid-template-columns: 1fr;
   }
 }
@@ -138,6 +138,10 @@ body.flexbox {
 
 .block.inline {
   display: inline-block;
+}
+
+.hidden {
+  display: none;
 }
 
 .float {
@@ -215,10 +219,17 @@ body.flexbox {
 @include smaller-than($xxl) {
   .tri-layout-container {
     grid-template-areas:  "c b b"
-    "a b b";
+    "a b b"
+    ". b b";
     grid-template-columns: 1fr 3fr;
-    grid-template-rows: max-content min-content;
+    grid-template-rows: min-content min-content 1fr;
     padding-right: $-l;
+  }
+}
+@include between($l, $xxl) {
+  .tri-layout-left {
+    position: sticky;
+    top: $-m;
   }
 }
 @include larger-than($xxl) {
@@ -252,10 +263,6 @@ body.flexbox {
     .tri-layout-left-contents, .tri-layout-right-contents {
       padding-left: $-m;
       padding-right: $-m;
-    }
-    .tri-layout-right-contents > div, .tri-layout-left-contents > div {
-      opacity: 0.6;
-      z-index: 0;
     }
     .tri-layout-left > *, .tri-layout-right > * {
       display: none;
@@ -294,19 +301,18 @@ body.flexbox {
   .tri-layout-mobile-tabs {
     display: none;
   }
+  .tri-layout-left-contents > div, .tri-layout-right-contents > div {
+    opacity: 0.6;
+    transition: opacity ease-in-out 120ms;
+    &:hover {
+      opacity: 1;
+    }
+  }
 }
 
 @include smaller-than($m) {
   .tri-layout-container {
     margin-left: 0;
     margin-right: 0;
-  }
-}
-
-.tri-layout-left-contents > div, .tri-layout-right-contents > div {
-  opacity: 0.6;
-  transition: opacity ease-in-out 120ms;
-  &:hover {
-    opacity: 1;
   }
 }
