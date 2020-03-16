@@ -1,18 +1,13 @@
 <?php
-
+/**
+ * Validation Lines
+ * The following language lines contain the default error messages used by
+ * the validator class. Some of these rules have multiple versions such
+ * as the size rules. Feel free to tweak each of these messages here.
+ */
 return [
 
-    /*
-    |--------------------------------------------------------------------------
-    | Validation Language Lines
-    |--------------------------------------------------------------------------
-    |
-    | The following language lines contain the default error messages used by
-    | the validator class. Some of these rules have multiple versions such
-    | as the size rules. Feel free to tweak each of these messages here.
-    |
-    */
-
+    // Standard laravel validation lines
     'accepted'             => ':attribute должен быть принят.',
     'active_url'           => ':attribute не является корректным URL.',
     'after'                => ':attribute дата должна быть позже :date.',
@@ -24,8 +19,8 @@ return [
     'between'              => [
         'numeric' => ':attribute должен быть между :min и :max.',
         'file'    => ':attribute должен быть между :min и :max килобайт.',
-        'string'  => 'длина :attribute должена быть между :min и :max символами.',
-        'array'   => ':attribute должен содержать не менее :min и не более:max элементов.',
+        'string'  => 'длина :attribute должна быть между :min и :max символами.',
+        'array'   => ':attribute должен содержать не менее :min и не более :max элементов.',
     ],
     'boolean'              => ':attribute поле может быть только true или false.',
     'confirmed'            => ':attribute подтверждение не совпадает.',
@@ -35,12 +30,41 @@ return [
     'digits'               => ':attribute должен состоять из :digits цифр.',
     'digits_between'       => ':attribute должен иметь от :min до :max цифр.',
     'email'                => ':attribute должен быть корректным email адресом.',
+    'ends_with' => ':attribute должен заканчиваться одним из следующих: :values',
     'filled'               => ':attribute поле необходимо.',
+    'gt'                   => [
+        'numeric' => 'Значение :attribute должно быть больше чем :value.',
+        'file'    => 'Значение :attribute должно быть больше :value килобайт.',
+        'string'  => 'Значение :attribute должно быть больше :value символов.',
+        'array'   => 'Значение :attribute должно содержать больше :value элементов.',
+    ],
+    'gte'                  => [
+        'numeric' => 'Значение :attribute должно быть больше или равно :value.',
+        'file'    => 'Значение :attribute должно быть больше или равно :value килобайт.',
+        'string'  => 'Значение :attribute должно быть больше или равно :value символам.',
+        'array'   => ':attribute должен иметь :value элементов или больше.',
+    ],
     'exists'               => 'выделенный :attribute некорректен.',
     'image'                => ':attribute должен быть изображением.',
+    'image_extension'      => ':attribute должен быть исправным  и содержать расширение картинки',
     'in'                   => 'выделенный :attribute некорректен.',
     'integer'              => ':attribute должно быть целое число.',
     'ip'                   => ':attribute должен быть корректным IP адресом.',
+    'ipv4'                 => ':attribute должен быть корректным IPv4-адресом.',
+    'ipv6'                 => ':attribute должен быть корректным IPv6-адресом.',
+    'json'                 => ':attribute должен быть допустимой строкой JSON.',
+    'lt'                   => [
+        'numeric' => 'Значение :attribute должно быть меньше, чем :value.',
+        'file'    => 'Значение :attribute должно быть меньше :value килобайт.',
+        'string'  => 'Значение :attribute должно быть меньше :value символов.',
+        'array'   => 'Значение :attribute должно быть меньше :value элементов.',
+    ],
+    'lte'                  => [
+        'numeric' => 'Значение :attribute должно быть меньше или равно :value.',
+        'file'    => 'Значение :attribute должно быть меньше или равно :value килобайт.',
+        'string'  => 'Значение :attribute должно быть меньше или равно :value символам.',
+        'array'   => 'Поле :attribute не должно содержать больше :value элементов.',
+    ],
     'max'                  => [
         'numeric' => ':attribute не может быть больше чем :max.',
         'file'    => ':attribute не может быть больше чем :max килобайт.',
@@ -49,14 +73,16 @@ return [
     ],
     'mimes'                => ':attribute должен быть файлом с типом: :values.',
     'min'                  => [
-        'numeric' => ':attribute должен быть хотя бы :min.',
+        'numeric' => 'Поле :attribute должно быть не менее :min.',
         'file'    => ':attribute должен быть минимум :min килобайт.',
         'string'  => ':attribute должен быть минимум :min символов.',
         'array'   => ':attribute должен содержать хотя бы :min элементов.',
     ],
+    'no_double_extension'  => ':attribute должен иметь только одно расширение файла.',
     'not_in'               => 'Выбранный :attribute некорректен.',
+    'not_regex'            => 'Формат :attribute некорректен.',
     'numeric'              => ':attribute должен быть числом.',
-    'regex'                => ':attribute неправильный формат.',
+    'regex'                => 'Формат :attribute некорректен.',
     'required'             => ':attribute обязательное поле.',
     'required_if'          => ':attribute обязательное поле когда :other со значением :value.',
     'required_with'        => ':attribute обязательное поле когда :values установлено.',
@@ -73,36 +99,16 @@ return [
     'string'               => ':attribute должен быть строкой.',
     'timezone'             => ':attribute должен быть корректным часовым поясом.',
     'unique'               => ':attribute уже есть.',
-    'url'                  => ':attribute имеет неправильный формат.',
+    'url'                  => 'Формат :attribute некорректен.',
+    'uploaded'             => 'Не удалось загрузить файл. Сервер не может принимать файлы такого размера.',
 
-    /*
-    |--------------------------------------------------------------------------
-    | Custom Validation Language Lines
-    |--------------------------------------------------------------------------
-    |
-    | Here you may specify custom validation messages for attributes using the
-    | convention 'attribute.rule' to name the lines. This makes it quick to
-    | specify a specific custom language line for a given attribute rule.
-    |
-    */
-
+    // Custom validation lines
     'custom' => [
         'password-confirm' => [
             'required_with' => 'Требуется подтверждение пароля',
         ],
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Custom Validation Attributes
-    |--------------------------------------------------------------------------
-    |
-    | The following language lines are used to swap attribute place-holders
-    | with something more reader friendly such as E-Mail Address instead
-    | of 'email'. This simply helps us make messages a little cleaner.
-    |
-    */
-
+    // Custom validation attributes
     'attributes' => [],
-
 ];

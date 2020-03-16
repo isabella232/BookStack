@@ -1,28 +1,17 @@
 <?php namespace BookStack\Entities;
 
-class Chapter extends Entity
+use Illuminate\Support\Collection;
+
+/**
+ * Class Chapter
+ * @property Collection<Page> $pages
+ * @package BookStack\Entities
+ */
+class Chapter extends BookChild
 {
     public $searchFactor = 1.3;
 
     protected $fillable = ['name', 'description', 'priority', 'book_id'];
-
-    /**
-     * Get the morph class for this model.
-     * @return string
-     */
-    public function getMorphClass()
-    {
-        return 'BookStack\\Chapter';
-    }
-
-    /**
-     * Get the book this chapter is within.
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function book()
-    {
-        return $this->belongsTo(Book::class);
-    }
 
     /**
      * Get the pages that this chapter contains.
@@ -42,10 +31,13 @@ class Chapter extends Entity
     public function getUrl($path = false)
     {
         $bookSlug = $this->getAttribute('bookSlug') ? $this->getAttribute('bookSlug') : $this->book->slug;
+        $fullPath = '/books/' . urlencode($bookSlug) . '/chapter/' . urlencode($this->slug);
+
         if ($path !== false) {
-            return baseUrl('/books/' . urlencode($bookSlug) . '/chapter/' . urlencode($this->slug) . '/' . trim($path, '/'));
+            $fullPath .= '/' . trim($path, '/');
         }
-        return baseUrl('/books/' . urlencode($bookSlug) . '/chapter/' . urlencode($this->slug));
+
+        return url($fullPath);
     }
 
     /**
@@ -56,16 +48,7 @@ class Chapter extends Entity
     public function getExcerpt(int $length = 100)
     {
         $description = $this->text ?? $this->description;
-        return strlen($description) > $length ? substr($description, 0, $length-3) . '...' : $description;
-    }
-
-    /**
-     * Return a generalised, common raw query that can be 'unioned' across entities.
-     * @return string
-     */
-    public function entityRawQuery()
-    {
-        return "'BookStack\\\\Chapter' as entity_type, id, id as entity_id, slug, name, {$this->textField} as text, '' as html, book_id, priority, '0' as chapter_id, '0' as draft, created_by, updated_by, updated_at, created_at";
+        return mb_strlen($description) > $length ? mb_substr($description, 0, $length-3) . '...' : $description;
     }
 
     /**
@@ -75,5 +58,16 @@ class Chapter extends Entity
     public function hasChildren()
     {
         return count($this->pages) > 0;
+    }
+
+    /**
+     * Get the visible pages in this chapter.
+     */
+    public function getVisiblePages(): Collection
+    {
+        return $this->pages()->visible()
+        ->orderBy('draft', 'desc')
+        ->orderBy('priority', 'asc')
+        ->get();
     }
 }

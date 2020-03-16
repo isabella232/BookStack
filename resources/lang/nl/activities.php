@@ -1,11 +1,9 @@
 <?php
-
+/**
+ * Activity text strings.
+ * Is used for all the text within activity logs & notifications.
+ */
 return [
-
-    /**
-     * Activity text strings.
-     * Is used for all the text within activity logs & notifications.
-     */
 
     // Pages
     'page_create'                 => 'maakte pagina',
@@ -37,6 +35,14 @@ return [
     'book_sort'                   => 'sorteerde boek',
     'book_sort_notification'      => 'Boek Succesvol Gesorteerd',
 
+    // Bookshelves
+    'bookshelf_create'            => 'maakte Boekenplank',
+    'bookshelf_create_notification'    => 'Boekenplank Succesvol Aangemaakt',
+    'bookshelf_update'                 => 'veranderde boekenplank',
+    'bookshelf_update_notification'    => 'Boekenplank Succesvol Bijgewerkt',
+    'bookshelf_delete'                 => 'verwijderde boekenplank',
+    'bookshelf_delete_notification'    => 'Boekenplank Succesvol Verwijderd',
+
     // Other
-    'commented_on'                => 'reactie op',												
+    'commented_on'                => 'reactie op',
 ];

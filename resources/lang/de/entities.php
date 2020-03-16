@@ -1,13 +1,17 @@
 <?php
+/**
+ * Text used for 'Entities' (Document Structure Elements) such as
+ * Books, Shelves, Chapters & Pages
+ */
 return [
-    /**
-     * Shared
-     */
+
+    // Shared
     'recently_created' => 'Kürzlich angelegt',
     'recently_created_pages' => 'Kürzlich angelegte Seiten',
     'recently_updated_pages' => 'Kürzlich aktualisierte Seiten',
     'recently_created_chapters' => 'Kürzlich angelegte Kapitel',
     'recently_created_books' => 'Kürzlich angelegte Bücher',
+    'recently_created_shelves' => 'Kürzlich angelegte Regale',
     'recently_update' => 'Kürzlich aktualisiert',
     'recently_viewed' => 'Kürzlich angesehen',
     'recent_activity' => 'Kürzliche Aktivität',
@@ -29,16 +33,14 @@ return [
     'export_html' => 'HTML-Datei',
     'export_pdf' => 'PDF-Datei',
     'export_text' => 'Textdatei',
-    /**
-     * Permissions and restrictions
-     */
+
+    // Permissions and restrictions
     'permissions' => 'Berechtigungen',
     'permissions_intro' => 'Wenn individuelle Berechtigungen aktiviert werden, überschreiben diese Einstellungen durch Rollen zugewiesene Berechtigungen.',
     'permissions_enable' => 'Individuelle Berechtigungen aktivieren',
     'permissions_save' => 'Berechtigungen speichern',
-    /**
-     * Search
-     */
+
+    // Search
     'search_results' => 'Suchergebnisse',
     'search_total_results_found' => ':count Ergebnis gefunden|:count Ergebnisse gesamt',
     'search_clear' => 'Filter löschen',
@@ -49,28 +51,30 @@ return [
     'search_content_type' => 'Inhaltstyp',
     'search_exact_matches' => 'Exakte Treffer',
     'search_tags' => 'Nach Schlagwort suchen',
+    'search_options' => 'Optionen',
     'search_viewed_by_me' => 'Schon von mir angesehen',
     'search_not_viewed_by_me' => 'Noch nicht von mir angesehen',
     'search_permissions_set' => 'Berechtigungen gesetzt',
     'search_created_by_me' => 'Von mir erstellt',
     'search_updated_by_me' => 'Von mir aktualisiert',
+    'search_date_options' => 'Datums Optionen',
     'search_updated_before' => 'Aktualisiert vor',
     'search_updated_after' => 'Aktualisiert nach',
     'search_created_before' => 'Erstellt vor',
     'search_created_after' => 'Erstellt nach',
     'search_set_date' => 'Datum auswählen',
     'search_update' => 'Suche aktualisieren',
-    
-    /*
-     * Shelves
-     */
+
+    // Shelves
     'shelf' => 'Regal',
     'shelves' => 'Regale',
+    'x_shelves' => ':count Regal|:count Regale',
     'shelves_long' => 'Bücherregal',
     'shelves_empty' => 'Es wurden noch keine Regale angelegt',
     'shelves_create' => 'Erzeuge ein Regal',
     'shelves_popular' => 'Beliebte Regale',
     'shelves_new' => 'Kürzlich erstellte Regale',
+    'shelves_new_action' => 'Neues Regal',
     'shelves_popular_empty' => 'Die beliebtesten Regale werden hier angezeigt.',
     'shelves_new_empty' => 'Die neusten Regale werden hier angezeigt.',
     'shelves_save' => 'Regal speichern',
@@ -92,10 +96,8 @@ return [
     'shelves_copy_permissions' => 'Berechtigungen kopieren',
     'shelves_copy_permissions_explain' => 'Hiermit werden die Berechtigungen des aktuellen Regals auf alle enthaltenen Bücher übertragen. Überprüfen Sie vor der Aktivierung, ob alle Berechtigungsänderungen am aktuellen Regal gespeichert wurden.',
     'shelves_copy_permission_success' => 'Regal-Berechtigungen wurden zu :count Büchern kopiert',
-    
-    /**
-     * Books
-     */
+
+    // Books
     'book' => 'Buch',
     'books' => 'Bücher',
     'x_books' => ':count Buch|:count Bücher',
@@ -103,6 +105,7 @@ return [
     'books_popular' => 'Beliebte Bücher',
     'books_recent' => 'Kürzlich angesehene Bücher',
     'books_new' => 'Neue Bücher',
+    'books_new_action' => 'Neues Buch',
     'books_popular_empty' => 'Die beliebtesten Bücher werden hier angezeigt.',
     'books_new_empty' => 'Die neusten Bücher werden hier angezeigt.',
     'books_create' => 'Neues Buch erstellen',
@@ -118,7 +121,6 @@ return [
     'books_permissions_updated' => 'Buch-Berechtigungen aktualisiert',
     'books_empty_contents' => 'Es sind noch keine Seiten oder Kapitel zu diesem Buch hinzugefügt worden.',
     'books_empty_create_page' => 'Neue Seite anlegen',
-    'books_empty_or' => 'oder',
     'books_empty_sort_current_book' => 'Aktuelles Buch sortieren',
     'books_empty_add_chapter' => 'Neues Kapitel hinzufügen',
     'books_permissions_active' => 'Buch-Berechtigungen aktiv',
@@ -126,11 +128,15 @@ return [
     'books_navigation' => 'Buchnavigation',
     'books_sort' => 'Buchinhalte sortieren',
     'books_sort_named' => 'Buch ":bookName" sortieren',
+    'books_sort_name' => 'Sortieren nach Namen',
+    'books_sort_created' => 'Sortieren nach Erstellungsdatum',
+    'books_sort_updated' => 'Sortieren nach Aktualisierungsdatum',
+    'books_sort_chapters_first' => 'Kapitel zuerst',
+    'books_sort_chapters_last' => 'Kapitel zuletzt',
     'books_sort_show_other' => 'Andere Bücher anzeigen',
     'books_sort_save' => 'Neue Reihenfolge speichern',
-    /**
-     * Chapters
-     */
+
+    // Chapters
     'chapter' => 'Kapitel',
     'chapters' => 'Kapitel',
     'x_chapters' => ':count Kapitel',
@@ -147,17 +153,13 @@ return [
     'chapters_move' => 'Kapitel verschieben',
     'chapters_move_named' => 'Kapitel ":chapterName" verschieben',
     'chapter_move_success' => 'Das Kapitel wurde in das Buch ":bookName" verschoben.',
-    'pages_copy' => 'Seite kopieren',
-    'pages_copy_desination' => 'Ziel',
-    'pages_copy_success' => 'Seite erfolgreich kopiert',
     'chapters_permissions' => 'Kapitel-Berechtigungen',
     'chapters_empty' => 'Aktuell sind keine Kapitel diesem Buch hinzugefügt worden.',
     'chapters_permissions_active' => 'Kapitel-Berechtigungen aktiv',
     'chapters_permissions_success' => 'Kapitel-Berechtigungenen aktualisisert',
     'chapters_search_this' => 'Dieses Kapitel durchsuchen',
-    /**
-     * Pages
-     */
+
+    // Pages
     'page' => 'Seite',
     'pages' => 'Seiten',
     'x_pages' => ':count Seite|:count Seiten',
@@ -174,7 +176,7 @@ return [
     'pages_delete_confirm' => 'Sind Sie sicher, dass Sie diese Seite löschen möchen?',
     'pages_delete_draft_confirm' => 'Sind Sie sicher, dass Sie diesen Seitenentwurf löschen möchten?',
     'pages_editing_named' => 'Seite ":pageName" bearbeiten',
-    'pages_edit_toggle_header' => 'Hauptmenü anzeigen/verstecken',
+    'pages_edit_draft_options' => 'Entwurfsoptionen',
     'pages_edit_save_draft' => 'Entwurf speichern',
     'pages_edit_draft' => 'Seitenentwurf bearbeiten',
     'pages_editing_draft' => 'Seitenentwurf bearbeiten',
@@ -196,6 +198,9 @@ return [
     'pages_not_in_chapter' => 'Seite ist in keinem Kapitel',
     'pages_move' => 'Seite verschieben',
     'pages_move_success' => 'Seite nach ":parentName" verschoben',
+    'pages_copy' => 'Seite kopieren',
+    'pages_copy_desination' => 'Ziel',
+    'pages_copy_success' => 'Seite erfolgreich kopiert',
     'pages_permissions' => 'Seiten Berechtigungen',
     'pages_permissions_success' => 'Seiten Berechtigungen aktualisiert',
     'pages_revision' => 'Version',
@@ -205,6 +210,8 @@ return [
     'pages_revisions_created_by' => 'Erstellt von',
     'pages_revisions_date' => 'Versionsdatum',
     'pages_revisions_number' => '#',
+    'pages_revisions_numbered' => 'Revision #:id',
+    'pages_revisions_numbered_changes' => 'Revision #:id Änderungen',
     'pages_revisions_changelog' => 'Änderungsprotokoll',
     'pages_revisions_changes' => 'Änderungen',
     'pages_revisions_current' => 'Aktuelle Version',
@@ -226,17 +233,21 @@ return [
         'message' => ':start :time. Achten Sie darauf, keine Änderungen von anderen Benutzern zu überschreiben!',
     ],
     'pages_draft_discarded' => 'Entwurf verworfen. Der aktuelle Seiteninhalt wurde geladen.',
-    /**
-     * Editor sidebar
-     */
+    'pages_specific' => 'Spezifische Seite',
+    'pages_is_template' => 'Seitenvorlage',
+
+    // Editor Sidebar
     'page_tags' => 'Seiten-Schlagwörter',
     'chapter_tags' => 'Kapitel-Schlagwörter',
     'book_tags' => 'Buch-Schlagwörter',
+    'shelf_tags' => 'Regal-Schlagwörter',
     'tag' => 'Schlagwort',
     'tags' =>  'Schlagwörter',
+    'tag_name' =>  'Schlagwort Name',
     'tag_value' => 'Inhalt (Optional)',
     'tags_explain' => "Fügen Sie Schlagwörter hinzu, um Ihren Inhalt zu kategorisieren.\nSie können einen erklärenden Inhalt hinzufügen, um eine genauere Unterteilung vorzunehmen.",
     'tags_add' => 'Weiteres Schlagwort hinzufügen',
+    'tags_remove' => 'Diesen Tag entfernen',
     'attachments' => 'Anhänge',
     'attachments_explain' => 'Sie können auf Ihrer Seite Dateien hochladen oder Links hinzufügen. Diese werden in der Seitenleiste angezeigt.',
     'attachments_explain_instant_save' => 'Änderungen werden direkt gespeichert.',
@@ -262,17 +273,22 @@ return [
     'attachments_file_uploaded' => 'Datei erfolgreich hochgeladen',
     'attachments_file_updated' => 'Datei erfolgreich aktualisiert',
     'attachments_link_attached' => 'Link erfolgreich der Seite hinzugefügt',
-    /**
-     * Profile View
-     */
+    'templates' => 'Vorlagen',
+    'templates_set_as_template' => 'Seite ist eine Vorlage',
+    'templates_explain_set_as_template' => 'Sie können diese Seite als Vorlage festlegen, damit deren Inhalt beim Erstellen anderer Seiten verwendet werden kann. Andere Benutzer können diese Vorlage verwenden, wenn sie die Zugriffsrechte für diese Seite haben.',
+    'templates_replace_content' => 'Seiteninhalt ersetzen',
+    'templates_append_content' => 'An Seiteninhalt anhängen',
+    'templates_prepend_content' => 'Seiteninhalt voranstellen',
+
+    // Profile View
     'profile_user_for_x' => 'Benutzer seit :time',
     'profile_created_content' => 'Erstellte Inhalte',
     'profile_not_created_pages' => ':userName hat noch keine Seiten erstellt.',
     'profile_not_created_chapters' => ':userName hat noch keine Kapitel erstellt.',
     'profile_not_created_books' => ':userName hat noch keine Bücher erstellt.',
-    /**
-     * Comments
-     */
+    'profile_not_created_shelves' => ':userName hat noch keine Regale erstellt.',
+
+    // Comments
     'comment' => 'Kommentar',
     'comments' => 'Kommentare',
     'comment_add' => 'Kommentieren',
@@ -290,10 +306,9 @@ return [
     'comment_delete_confirm' => 'Möchten Sie diesen Kommentar wirklich löschen?',
     'comment_in_reply_to' => 'Antwort auf :commentId',
 
-    /**
-     * Revision
-     */
+    // Revision
     'revision_delete_confirm' => 'Sind Sie sicher, dass Sie diese Revision löschen wollen?',
+    'revision_restore_confirm' => 'Sind Sie sicher, dass Sie diese Revision wiederherstellen wollen? Der aktuelle Seiteninhalt wird ersetzt.',
     'revision_delete_success' => 'Revision gelöscht',
     'revision_cannot_delete_latest' => 'Die letzte Version kann nicht gelöscht werden.'
 ];

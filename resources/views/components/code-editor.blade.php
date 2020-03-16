@@ -1,6 +1,6 @@
 <div id="code-editor">
     <div overlay ref="overlay" v-cloak @click="hide()">
-        <div class="popup-body" @click.stop>
+        <div class="popup-body" tabindex="-1" @click.stop>
 
             <div class="popup-header primary-background">
                 <div class="popup-title">{{ trans('components.code_editor') }}</div>
@@ -16,16 +16,20 @@
                             <a @click="updateLanguage('C')">C</a>
                             <a @click="updateLanguage('C++')">C++</a>
                             <a @click="updateLanguage('C#')">C#</a>
+                            <a @click="updateLanguage('Fortran')">Fortran</a>
                             <a @click="updateLanguage('Go')">Go</a>
                             <a @click="updateLanguage('HTML')">HTML</a>
+                            <a @click="updateLanguage('INI')">INI</a>
                             <a @click="updateLanguage('Java')">Java</a>
                             <a @click="updateLanguage('JavaScript')">JavaScript</a>
                             <a @click="updateLanguage('JSON')">JSON</a>
                             <a @click="updateLanguage('Lua')">Lua</a>
-                            <a @click="updateLanguage('PHP')">PHP</a>
-                            <a @click="updateLanguage('Powershell')">Powershell</a>
                             <a @click="updateLanguage('MarkDown')">MarkDown</a>
                             <a @click="updateLanguage('Nginx')">Nginx</a>
+                            <a @click="updateLanguage('PASCAL')">Pascal</a>
+                            <a @click="updateLanguage('Perl')">Perl</a>
+                            <a @click="updateLanguage('PHP')">PHP</a>
+                            <a @click="updateLanguage('Powershell')">Powershell</a>
                             <a @click="updateLanguage('Python')">Python</a>
                             <a @click="updateLanguage('Ruby')">Ruby</a>
                             <a @click="updateLanguage('shell')">Shell/Bash</a>
@@ -43,7 +47,7 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="button" class="button primary" @click="save()">{{ trans('components.code_save') }}</button>
+                    <button type="button" class="button" @click="save()">{{ trans('components.code_save') }}</button>
                 </div>
 
             </div>

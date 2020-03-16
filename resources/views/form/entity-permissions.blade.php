@@ -1,4 +1,4 @@
-<form action="{{ $model->getUrl('/permissions') }}" method="POST">
+<form action="{{ $model->getUrl('/permissions') }}" method="POST" entity-permissions-editor>
     {!! csrf_field() !!}
     <input type="hidden" name="_method" value="PUT">
 
@@ -11,7 +11,7 @@
         ])
     </div>
 
-    <table permissions-table class="table permissions-table toggle-switch-list">
+    <table permissions-table class="table permissions-table toggle-switch-list" style="{{ !$model->restricted ? 'display: none' : '' }}">
         <tr>
             <th>{{ trans('common.role') }}</th>
             <th @if($model->isA('page')) colspan="3" @else colspan="4" @endif>
@@ -19,7 +19,7 @@
                 <a href="#" permissions-table-toggle-all class="text-small ml-m text-primary">{{ trans('common.toggle_all') }}</a>
             </th>
         </tr>
-        @foreach($roles as $role)
+        @foreach(\BookStack\Auth\Role::restrictable() as $role)
             <tr>
                 <td width="33%" class="pt-m">
                     {{ $role->display_name }}
@@ -37,6 +37,6 @@
 
     <div class="text-right">
         <a href="{{ $model->getUrl() }}" class="button outline">{{ trans('common.cancel') }}</a>
-        <button type="submit" class="button primary">{{ trans('entities.permissions_save') }}</button>
+        <button type="submit" class="button">{{ trans('entities.permissions_save') }}</button>
     </div>
 </form>

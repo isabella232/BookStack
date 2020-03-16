@@ -11,7 +11,7 @@ class RolesTest extends BrowserKitTest
 {
     protected $user;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->user = $this->getViewer();
@@ -117,6 +117,43 @@ class RolesTest extends BrowserKitTest
         $this->actingAs($this->user)->visit('/')->see($usersLink);
         $this->giveUserPermissions($this->user, ['settings-manage', 'users-manage']);
         $this->actingAs($this->user)->visit('/')->dontSee($usersLink);
+    }
+
+    public function test_user_cannot_change_email_unless_they_have_manage_users_permission()
+    {
+        $userProfileUrl = '/settings/users/' . $this->user->id;
+        $originalEmail = $this->user->email;
+        $this->actingAs($this->user);
+
+        $this->visit($userProfileUrl)
+            ->assertResponseOk()
+            ->seeElement('input[name=email][disabled]');
+        $this->put($userProfileUrl, [
+            'name' => 'my_new_name',
+            'email' => 'new_email@example.com',
+        ]);
+        $this->seeInDatabase('users', [
+            'id' => $this->user->id,
+            'email' => $originalEmail,
+            'name' => 'my_new_name',
+        ]);
+
+        $this->giveUserPermissions($this->user, ['users-manage']);
+
+        $this->visit($userProfileUrl)
+            ->assertResponseOk()
+            ->dontSeeElement('input[name=email][disabled]')
+            ->seeElement('input[name=email]');
+        $this->put($userProfileUrl, [
+            'name' => 'my_new_name_2',
+            'email' => 'new_email@example.com',
+        ]);
+
+        $this->seeInDatabase('users', [
+            'id' => $this->user->id,
+            'email' => 'new_email@example.com',
+            'name' => 'my_new_name_2',
+        ]);
     }
 
     public function test_user_roles_manage_permission()
@@ -600,14 +637,14 @@ class RolesTest extends BrowserKitTest
             $ownPage->getUrl() => 'Delete'
         ]);
 
-        $bookUrl = $ownPage->book->getUrl();
+        $parent = $ownPage->chapter ?? $ownPage->book;
         $this->visit($otherPage->getUrl())
             ->dontSeeInElement('.action-buttons', 'Delete')
             ->visit($otherPage->getUrl() . '/delete')
             ->seePageIs('/');
         $this->visit($ownPage->getUrl())->visit($ownPage->getUrl() . '/delete')
             ->press('Confirm')
-            ->seePageIs($bookUrl)
+            ->seePageIs($parent->getUrl())
             ->dontSeeInElement('.book-content', $ownPage->name);
     }
 
@@ -621,10 +658,10 @@ class RolesTest extends BrowserKitTest
             $otherPage->getUrl() => 'Delete'
         ]);
 
-        $bookUrl = $otherPage->book->getUrl();
+        $parent = $otherPage->chapter ?? $otherPage->book;
         $this->visit($otherPage->getUrl())->visit($otherPage->getUrl() . '/delete')
             ->press('Confirm')
-            ->seePageIs($bookUrl)
+            ->seePageIs($parent->getUrl())
             ->dontSeeInElement('.book-content', $otherPage->name);
     }
 
