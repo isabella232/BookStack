@@ -19,6 +19,18 @@
             </div>
         </div>
 
+        <markdown-toolbar for="markdown-textarea">
+            <md-bold><i class="fas fa-bold"></i></md-bold>
+            <md-header><i class="fas fa-heading"></i></md-header>
+            <md-italic><i class="fas fa-italic"></i></md-italic>
+            <md-quote><i class="fas fa-quote-right"></i></md-quote>
+            <md-code><i class="fas fa-code"></i></md-code>
+            <md-link><i class="fas fa-link"></i></md-link>
+            <md-unordered-list><i class="fas fa-list-ul"></i></md-unordered-list>
+            <md-ordered-list><i class="fas fa-list-ol"></i></md-ordered-list>
+            <md-task-list><i class="fas fa-tasks"></i></md-task-list>
+        </markdown-toolbar>
+
         <div markdown-input class="flex flex-fill">
             <textarea id="markdown-editor-input"
                       @if($errors->has('markdown')) class="text-neg" @endif
