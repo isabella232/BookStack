@@ -1,10 +1,8 @@
 <?php
-
+/**
+ * Text shown in error messaging.
+ */
 return [
-
-    /**
-     * Error text strings.
-     */
 
     // Permissions
     'permission' => 'Du har inte tillgång till den här sidan.',
@@ -15,10 +13,16 @@ return [
     'email_already_confirmed' => 'E-posten har redan bekräftats, prova att logga in.',
     'email_confirmation_invalid' => 'Denna bekräftelsekod är inte giltig eller har redan använts. Vänligen prova att registera dig på nytt',
     'email_confirmation_expired' => 'Denna bekräftelsekod har gått ut. Vi har skickat dig en ny.',
+    'email_confirmation_awaiting' => 'The email address for the account in use needs to be confirmed',
     'ldap_fail_anonymous' => 'LDAP-inloggning misslyckades med anonym bindning',
     'ldap_fail_authed' => 'LDAP-inloggning misslyckades med angivna dn- och lösenordsuppgifter',
     'ldap_extension_not_installed' => 'LDAP PHP-tillägg inte installerat',
     'ldap_cannot_connect' => 'Kan inte ansluta till ldap-servern. Anslutningen misslyckades',
+    'saml_already_logged_in' => 'Already logged in',
+    'saml_user_not_registered' => 'The user :name is not registered and automatic registration is disabled',
+    'saml_no_email_address' => 'Could not find an email address, for this user, in the data provided by the external authentication system',
+    'saml_invalid_response_id' => 'The request from the external authentication system is not recognised by a process started by this application. Navigating back after a login could cause this issue.',
+    'saml_fail_authed' => 'Login using :system failed, system did not provide successful authorization',
     'social_no_action_defined' => 'Ingen åtgärd definierad',
     'social_login_bad_response' => "Ett fel inträffade vid inloggning genom :socialAccount: \n:error",
     'social_account_in_use' => 'Detta konto från :socialAccount används redan. Testa att logga in med :socialAccount istället.',
@@ -29,6 +33,7 @@ return [
     'social_account_register_instructions' => 'Om du inte har något konto ännu kan du registerar dig genom att välja :socialAccount.',
     'social_driver_not_found' => 'Drivrutinen för den här tjänsten hittades inte',
     'social_driver_not_configured' => 'Dina inställningar för :socialAccount är inte korrekta.',
+    'invite_token_expired' => 'This invitation link has expired. You can instead try to reset your account password.',
 
     // System
     'path_not_writable' => 'Kunde inte ladda upp till sökvägen :filePath. Kontrollera att webbservern har skrivåtkomst.',
@@ -50,6 +55,7 @@ return [
 
     // Entities
     'entity_not_found' => 'Innehållet hittades inte',
+    'bookshelf_not_found' => 'Hyllan hittades inte',
     'book_not_found' => 'Boken hittades inte',
     'page_not_found' => 'Sidan hittades inte',
     'chapter_not_found' => 'Kapitlet hittades inte',
@@ -65,6 +71,7 @@ return [
     'role_cannot_be_edited' => 'Den här rollen kan inte redigeras',
     'role_system_cannot_be_deleted' => 'Det här är en systemroll och kan därför inte tas bort',
     'role_registration_default_cannot_delete' => 'Det går inte att ta bort rollen medan den används som standardroll.',
+    'role_cannot_remove_only_admin' => 'Detta är den enda användaren med administratörsroll. Gör någon annan användare till administratör innan du tar bort denna.',
 
     // Comments
     'comment_list' => 'Ett fel inträffade då kommentarer skulle hämtas.',
@@ -76,8 +83,21 @@ return [
     // Error pages
     '404_page_not_found' => 'Sidan hittades inte',
     'sorry_page_not_found' => 'Tyvärr gick det inte att hitta sidan du söker.',
+    'sorry_page_not_found_permission_warning' => 'If you expected this page to exist, you might not have permission to view it.',
     'return_home' => 'Återvänd till startsidan',
     'error_occurred' => 'Ett fel inträffade',
     'app_down' => ':appName är nere just nu',
     'back_soon' => 'Vi är snart tillbaka.',
+
+    // API errors
+    'api_no_authorization_found' => 'No authorization token found on the request',
+    'api_bad_authorization_format' => 'An authorization token was found on the request but the format appeared incorrect',
+    'api_user_token_not_found' => 'No matching API token was found for the provided authorization token',
+    'api_incorrect_token_secret' => 'The secret provided for the given used API token is incorrect',
+    'api_user_no_api_permission' => 'The owner of the used API token does not have permission to make API calls',
+    'api_user_token_expired' => 'The authorization token used has expired',
+
+    // Settings & Maintenance
+    'maintenance_test_email_failure' => 'Error thrown when sending a test email:',
+
 ];

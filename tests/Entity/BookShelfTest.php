@@ -1,12 +1,16 @@
 <?php namespace Tests;
 
-use BookStack\Auth\Role;
 use BookStack\Auth\User;
 use BookStack\Entities\Book;
 use BookStack\Entities\Bookshelf;
+use BookStack\Uploads\Image;
+use Illuminate\Support\Str;
+use Tests\Uploads\UsesImages;
 
 class BookShelfTest extends TestCase
 {
+
+    use UsesImages;
 
     public function test_shelves_shows_in_header_if_have_view_permissions()
     {
@@ -55,8 +59,8 @@ class BookShelfTest extends TestCase
     {
         $booksToInclude = Book::take(2)->get();
         $shelfInfo = [
-            'name' => 'My test book' . str_random(4),
-            'description' => 'Test book description ' . str_random(10)
+            'name' => 'My test book' . Str::random(4),
+            'description' => 'Test book description ' . Str::random(10)
         ];
         $resp = $this->asEditor()->post('/shelves', array_merge($shelfInfo, [
             'books' => $booksToInclude->implode('id', ','),
@@ -80,6 +84,26 @@ class BookShelfTest extends TestCase
 
         $this->assertDatabaseHas('bookshelves_books', ['bookshelf_id' => $shelf->id, 'book_id' => $booksToInclude[0]->id]);
         $this->assertDatabaseHas('bookshelves_books', ['bookshelf_id' => $shelf->id, 'book_id' => $booksToInclude[1]->id]);
+    }
+
+    public function test_shelves_create_sets_cover_image()
+    {
+        $shelfInfo = [
+            'name' => 'My test book' . Str::random(4),
+            'description' => 'Test book description ' . Str::random(10)
+        ];
+
+        $imageFile = $this->getTestImage('shelf-test.png');
+        $resp = $this->asEditor()->call('POST', '/shelves', $shelfInfo, [], ['image' => $imageFile]);
+        $resp->assertRedirect();
+
+        $lastImage = Image::query()->orderByDesc('id')->firstOrFail();
+        $shelf = Bookshelf::query()->where('name', '=', $shelfInfo['name'])->first();
+        $this->assertDatabaseHas('bookshelves', [
+            'id' => $shelf->id,
+            'image_id' => $lastImage->id,
+        ]);
+        $this->assertEquals($lastImage->id, $shelf->cover->id);
     }
 
     public function test_shelf_view()
@@ -120,8 +144,8 @@ class BookShelfTest extends TestCase
 
         $booksToInclude = Book::take(2)->get();
         $shelfInfo = [
-            'name' => 'My test book' . str_random(4),
-            'description' => 'Test book description ' . str_random(10)
+            'name' => 'My test book' . Str::random(4),
+            'description' => 'Test book description ' . Str::random(10)
         ];
 
         $resp = $this->asEditor()->put($shelf->getUrl(), array_merge($shelfInfo, [

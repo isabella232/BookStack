@@ -1,5 +1,6 @@
 <?php namespace BookStack\Uploads;
 
+use BookStack\Entities\Page;
 use BookStack\Ownable;
 use Images;
 
@@ -7,6 +8,7 @@ class Image extends Ownable
 {
 
     protected $fillable = ['name'];
+    protected $hidden = [];
 
     /**
      * Get a thumbnail for this image.
@@ -19,5 +21,15 @@ class Image extends Ownable
     public function getThumb($width, $height, $keepRatio = false)
     {
         return Images::getThumbnail($this, $width, $height, $keepRatio);
+    }
+
+    /**
+     * Get the page this image has been uploaded to.
+     * Only applicable to gallery or drawio image types.
+     * @return Page|null
+     */
+    public function getPage()
+    {
+        return $this->belongsTo(Page::class, 'uploaded_to')->first();
     }
 }

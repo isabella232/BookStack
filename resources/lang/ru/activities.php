@@ -1,11 +1,9 @@
 <?php
-
+/**
+ * Activity text strings.
+ * Is used for all the text within activity logs & notifications.
+ */
 return [
-
-    /**
-     * Activity text strings.
-     * Is used for all the text within activity logs & notifications.
-     */
 
     // Pages
     'page_create'                 => 'создал страницу',
@@ -20,7 +18,7 @@ return [
 
     // Chapters
     'chapter_create'              => 'создал главу',
-    'chapter_create_notification' => 'глава успешно создана',
+    'chapter_create_notification' => 'Глава успешно создана',
     'chapter_update'              => 'обновил главу',
     'chapter_update_notification' => 'Глава успешно обновлена',
     'chapter_delete'              => 'удалил главу',
@@ -36,6 +34,14 @@ return [
     'book_delete_notification'    => 'Книга успешно удалена',
     'book_sort'                   => 'отсортировал книгу',
     'book_sort_notification'      => 'Книга успешно отсортирована',
+
+    // Bookshelves
+    'bookshelf_create'            => 'создал полку',
+    'bookshelf_create_notification'    => 'Полка успешно создана',
+    'bookshelf_update'                 => 'обновил полку',
+    'bookshelf_update_notification'    => 'Полка успешно обновлена',
+    'bookshelf_delete'                 => 'удалил полку',
+    'bookshelf_delete_notification'    => 'Полка успешно удалена',
 
     // Other
     'commented_on'                => 'прокомментировал',
