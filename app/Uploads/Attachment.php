@@ -13,7 +13,7 @@ class Attachment extends Ownable
      */
     public function getFileName()
     {
-        if (str_contains($this->name, '.')) {
+        if (strpos($this->name, '.') !== false) {
             return $this->name;
         }
         return $this->name . '.' . $this->extension;
@@ -37,6 +37,6 @@ class Attachment extends Ownable
         if ($this->external && strpos($this->path, 'http') !== 0) {
             return $this->path;
         }
-        return baseUrl('/attachments/' . $this->id);
+        return url('/attachments/' . $this->id);
     }
 }

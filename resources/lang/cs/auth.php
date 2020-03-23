@@ -18,14 +18,16 @@ return [
 
     'name' => 'Jméno',
     'username' => 'Jméno účtu',
-    'email' => 'Email',
+    'email' => 'E-mail',
     'password' => 'Heslo',
     'password_confirm' => 'Potvrdit heslo',
-    'password_hint' => 'Musí mít víc než 5 znaků',
+    'password_hint' => 'Musí mít víc než 7 znaků',
     'forgot_password' => 'Zapomněli jste heslo?',
     'remember_me' => 'Neodhlašovat',
     'ldap_email_hint' => 'Zadejte email, který chcete přiřadit k tomuto účtu.',
     'create_account' => 'Vytvořit účet',
+    'already_have_account' => 'Máte už založený účet?',
+    'dont_have_account' => 'Nemáte učet?',
     'social_login' => 'Přihlášení přes sociální sítě',
     'social_registration' => 'Registrace přes sociální sítě',
     'social_registration_text' => 'Registrovat a přihlásit se přes jinou službu',
@@ -62,4 +64,14 @@ return [
     'email_not_confirmed_click_link' => 'Klikněte na odkaz v emailu který jsme vám zaslali ihned po registraci.',
     'email_not_confirmed_resend' => 'Pokud nemůžete nalézt email v příchozí poště, můžete si jej nechat poslat znovu pomocí formuláře níže.',
     'email_not_confirmed_resend_button' => 'Znovu poslat email pro potvrzení emailové adresy',
+
+    // User Invite
+    'user_invite_email_subject' => 'Byl jste pozván do :appName!',
+    'user_invite_email_greeting' => 'Byl pro vás vytvořen účet na :appName.',
+    'user_invite_email_text' => 'Klikněte na tlačítko níže pro nastavení hesla k účtu a získání přístupu:',
+    'user_invite_email_action' => 'Nastavit heslo účtu',
+    'user_invite_page_welcome' => 'Vítejte v :appName!',
+    'user_invite_page_text' => 'Chcete-li dokončit svůj účet a získat přístup, musíte nastavit heslo, které bude použito k přihlášení do :appName při budoucích návštěvách.',
+    'user_invite_page_confirm_button' => 'Potvrdit heslo',
+    'user_invite_success' => 'Heslo nastaveno, nyní máte přístup k :appName!'
 ];

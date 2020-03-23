@@ -1,5 +1,7 @@
 <?php namespace Tests;
 
+use BookStack\Entities\Bookshelf;
+
 class HomepageTest extends TestCase
 {
 
@@ -36,10 +38,14 @@ class HomepageTest extends TestCase
         $name = 'My custom homepage';
         $content = str_repeat('This is the body content of my custom homepage.', 20);
         $customPage = $this->newPage(['name' => $name, 'html' => $content]);
-        $this->setSettings(['app-homepage' => $customPage->id]);
+        $this->setSettings([
+            'app-homepage' => $customPage->id,
+            'app-homepage-type' => 'page'
+        ]);
 
         $homeVisit = $this->get('/');
         $homeVisit->assertSee($name);
+        $homeVisit->assertElementNotExists('#home-default');
 
         $pageDeleteReq = $this->delete($customPage->getUrl());
         $pageDeleteReq->assertStatus(302);
@@ -50,6 +56,23 @@ class HomepageTest extends TestCase
         $homeVisit = $this->get('/');
         $homeVisit->assertSee($name);
         $homeVisit->assertStatus(200);
+    }
+
+    public function test_custom_homepage_can_be_deleted_once_custom_homepage_no_longer_used()
+    {
+        $this->asEditor();
+        $name = 'My custom homepage';
+        $content = str_repeat('This is the body content of my custom homepage.', 20);
+        $customPage = $this->newPage(['name' => $name, 'html' => $content]);
+        $this->setSettings([
+            'app-homepage' => $customPage->id,
+            'app-homepage-type' => 'default'
+        ]);
+
+        $pageDeleteReq = $this->delete($customPage->getUrl());
+        $pageDeleteReq->assertStatus(302);
+        $pageDeleteReq->assertSessionHas('success');
+        $pageDeleteReq->assertSessionMissing('error');
     }
 
     public function test_set_book_homepage()
@@ -88,5 +111,34 @@ class HomepageTest extends TestCase
 
         $this->setSettings(['app-homepage-type' => false]);
         $this->test_default_homepage_visible();
+    }
+
+    public function test_shelves_list_homepage_adheres_to_book_visibility_permissions()
+    {
+        $editor = $this->getEditor();
+        setting()->putUser($editor, 'bookshelves_view_type', 'list');
+        $this->setSettings(['app-homepage-type' => 'bookshelves']);
+        $this->asEditor();
+
+        $shelf = Bookshelf::query()->first();
+        $book = $shelf->books()->first();
+
+        // Ensure initially visible
+        $homeVisit = $this->get('/');
+        $homeVisit->assertElementContains('.content-wrap', $shelf->name);
+        $homeVisit->assertElementContains('.content-wrap', $book->name);
+
+        // Ensure book no longer visible without view permission
+        $editor->roles()->detach();
+        $this->giveUserPermissions($editor, ['bookshelf-view-all']);
+        $homeVisit = $this->get('/');
+        $homeVisit->assertElementContains('.content-wrap', $shelf->name);
+        $homeVisit->assertElementNotContains('.content-wrap', $book->name);
+
+        // Ensure is visible again with entity-level view permission
+        $this->setEntityRestrictions($book, ['view'], [$editor->roles()->first()]);
+        $homeVisit = $this->get('/');
+        $homeVisit->assertElementContains('.content-wrap', $shelf->name);
+        $homeVisit->assertElementContains('.content-wrap', $book->name);
     }
 }

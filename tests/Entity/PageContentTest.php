@@ -1,8 +1,7 @@
 <?php namespace Tests;
 
+use BookStack\Entities\Managers\PageContent;
 use BookStack\Entities\Page;
-use BookStack\Entities\Repos\EntityRepo;
-use BookStack\Entities\Repos\PageRepo;
 
 class PageContentTest extends TestCase
 {
@@ -50,7 +49,7 @@ class PageContentTest extends TestCase
         $resp->assertStatus(302);
 
         $page = Page::find($page->id);
-        $this->assertContains($includeTag, $page->html);
+        $this->assertStringContainsString($includeTag, $page->html);
         $this->assertEquals('', $page->text);
     }
 
@@ -71,17 +70,112 @@ class PageContentTest extends TestCase
         $pageResp->assertSee($content);
     }
 
-    public function test_page_content_scripts_escaped_by_default()
+    public function test_page_content_scripts_removed_by_default()
     {
         $this->asEditor();
         $page = Page::first();
-        $script = '<script>console.log("hello-test")</script>';
+        $script = 'abc123<script>console.log("hello-test")</script>abc123';
         $page->html = "escape {$script}";
         $page->save();
 
         $pageView = $this->get($page->getUrl());
+        $pageView->assertStatus(200);
         $pageView->assertDontSee($script);
-        $pageView->assertSee(htmlentities($script));
+        $pageView->assertSee('abc123abc123');
+    }
+
+    public function test_more_complex_content_script_escaping_scenarios()
+    {
+        $checks = [
+            "<p>Some script</p><script>alert('cat')</script>",
+            "<div><div><div><div><p>Some script</p><script>alert('cat')</script></div></div></div></div>",
+            "<p>Some script<script>alert('cat')</script></p>",
+            "<p>Some script <div><script>alert('cat')</script></div></p>",
+            "<p>Some script <script><div>alert('cat')</script></div></p>",
+            "<p>Some script <script><div>alert('cat')</script><script><div>alert('cat')</script></p><script><div>alert('cat')</script>",
+        ];
+
+        $this->asEditor();
+        $page = Page::first();
+
+        foreach ($checks as $check) {
+            $page->html = $check;
+            $page->save();
+
+            $pageView = $this->get($page->getUrl());
+            $pageView->assertStatus(200);
+            $pageView->assertElementNotContains('.page-content', '<script>');
+            $pageView->assertElementNotContains('.page-content', '</script>');
+        }
+
+    }
+
+    public function test_iframe_js_and_base64_urls_are_removed()
+    {
+        $checks = [
+            '<iframe src="javascript:alert(document.cookie)"></iframe>',
+            '<iframe SRC=" javascript: alert(document.cookie)"></iframe>',
+            '<iframe src="data:text/html;base64,PHNjcmlwdD5hbGVydCgnaGVsbG8nKTwvc2NyaXB0Pg==" frameborder="0"></iframe>',
+            '<iframe src=" data:text/html;base64,PHNjcmlwdD5hbGVydCgnaGVsbG8nKTwvc2NyaXB0Pg==" frameborder="0"></iframe>',
+            '<iframe srcdoc="<script>window.alert(document.cookie)</script>"></iframe>'
+        ];
+
+        $this->asEditor();
+        $page = Page::first();
+
+        foreach ($checks as $check) {
+            $page->html = $check;
+            $page->save();
+
+            $pageView = $this->get($page->getUrl());
+            $pageView->assertStatus(200);
+            $pageView->assertElementNotContains('.page-content', '<iframe>');
+            $pageView->assertElementNotContains('.page-content', '</iframe>');
+            $pageView->assertElementNotContains('.page-content', 'src=');
+            $pageView->assertElementNotContains('.page-content', 'javascript:');
+            $pageView->assertElementNotContains('.page-content', 'data:');
+            $pageView->assertElementNotContains('.page-content', 'base64');
+        }
+
+    }
+
+    public function test_page_inline_on_attributes_removed_by_default()
+    {
+        $this->asEditor();
+        $page = Page::first();
+        $script = '<p onmouseenter="console.log(\'test\')">Hello</p>';
+        $page->html = "escape {$script}";
+        $page->save();
+
+        $pageView = $this->get($page->getUrl());
+        $pageView->assertStatus(200);
+        $pageView->assertDontSee($script);
+        $pageView->assertSee('<p>Hello</p>');
+    }
+
+    public function test_more_complex_inline_on_attributes_escaping_scenarios()
+    {
+        $checks = [
+            '<p onclick="console.log(\'test\')">Hello</p>',
+            '<div>Lorem ipsum dolor sit amet.</div><p onclick="console.log(\'test\')">Hello</p>',
+            '<div>Lorem ipsum dolor sit amet.<p onclick="console.log(\'test\')">Hello</p></div>',
+            '<div><div><div><div>Lorem ipsum dolor sit amet.<p onclick="console.log(\'test\')">Hello</p></div></div></div></div>',
+            '<div onclick="console.log(\'test\')">Lorem ipsum dolor sit amet.</div><p onclick="console.log(\'test\')">Hello</p><div></div>',
+            '<a a="<img src=1 onerror=\'alert(1)\'> ',
+        ];
+
+        $this->asEditor();
+        $page = Page::first();
+
+        foreach ($checks as $check) {
+            $page->html = $check;
+            $page->save();
+
+            $pageView = $this->get($page->getUrl());
+            $pageView->assertStatus(200);
+            $pageView->assertElementNotContains('.page-content', 'onclick');
+        }
+
     }
 
     public function test_page_content_scripts_show_when_configured()
@@ -89,13 +183,29 @@ class PageContentTest extends TestCase
         $this->asEditor();
         $page = Page::first();
         config()->push('app.allow_content_scripts', 'true');
-        $script = '<script>console.log("hello-test")</script>';
+
+        $script = 'abc123<script>console.log("hello-test")</script>abc123';
         $page->html = "no escape {$script}";
         $page->save();
 
         $pageView = $this->get($page->getUrl());
         $pageView->assertSee($script);
-        $pageView->assertDontSee(htmlentities($script));
+        $pageView->assertDontSee('abc123abc123');
+    }
+
+    public function test_page_inline_on_attributes_show_if_configured()
+    {
+        $this->asEditor();
+        $page = Page::first();
+        config()->push('app.allow_content_scripts', 'true');
+
+        $script = '<p onmouseenter="console.log(\'test\')">Hello</p>';
+        $page->html = "escape {$script}";
+        $page->save();
+
+        $pageView = $this->get($page->getUrl());
+        $pageView->assertSee($script);
+        $pageView->assertDontSee('<p>Hello</p>');
     }
 
     public function test_duplicate_ids_does_not_break_page_render()
@@ -130,5 +240,67 @@ class PageContentTest extends TestCase
 
         $updatedPage = Page::where('id', '=', $page->id)->first();
         $this->assertEquals(substr_count($updatedPage->html, "bkmrk-test\""), 1);
+    }
+
+    public function test_get_page_nav_sets_correct_properties()
+    {
+        $content = '<h1 id="testa">Hello</h1><h2 id="testb">There</h2><h3 id="testc">Donkey</h3>';
+        $pageContent = new PageContent(new Page(['html' => $content]));
+        $navMap = $pageContent->getNavigation($content);
+
+        $this->assertCount(3, $navMap);
+        $this->assertArrayMapIncludes([
+            'nodeName' => 'h1',
+            'link' => '#testa',
+            'text' => 'Hello',
+            'level' => 1,
+        ], $navMap[0]);
+        $this->assertArrayMapIncludes([
+            'nodeName' => 'h2',
+            'link' => '#testb',
+            'text' => 'There',
+            'level' => 2,
+        ], $navMap[1]);
+        $this->assertArrayMapIncludes([
+            'nodeName' => 'h3',
+            'link' => '#testc',
+            'text' => 'Donkey',
+            'level' => 3,
+        ], $navMap[2]);
+    }
+
+    public function test_get_page_nav_does_not_show_empty_titles()
+    {
+        $content = '<h1 id="testa">Hello</h1><h2 id="testb">&nbsp;</h2><h3 id="testc"></h3>';
+        $pageContent = new PageContent(new Page(['html' => $content]));
+        $navMap = $pageContent->getNavigation($content);
+
+        $this->assertCount(1, $navMap);
+        $this->assertArrayMapIncludes([
+            'nodeName' => 'h1',
+            'link' => '#testa',
+            'text' => 'Hello'
+        ], $navMap[0]);
+    }
+
+    public function test_get_page_nav_shifts_headers_if_only_smaller_ones_are_used()
+    {
+        $content = '<h4 id="testa">Hello</h4><h5 id="testb">There</h5><h6 id="testc">Donkey</h6>';
+        $pageContent = new PageContent(new Page(['html' => $content]));
+        $navMap = $pageContent->getNavigation($content);
+
+        $this->assertCount(3, $navMap);
+        $this->assertArrayMapIncludes([
+            'nodeName' => 'h4',
+            'level' => 1,
+        ], $navMap[0]);
+        $this->assertArrayMapIncludes([
+            'nodeName' => 'h5',
+            'level' => 2,
+        ], $navMap[1]);
+        $this->assertArrayMapIncludes([
+            'nodeName' => 'h6',
+            'level' => 3,
+        ], $navMap[2]);
     }
 }

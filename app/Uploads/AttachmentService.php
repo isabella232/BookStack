@@ -2,6 +2,7 @@
 
 use BookStack\Exceptions\FileUploadException;
 use Exception;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class AttachmentService extends UploadService
@@ -13,7 +14,7 @@ class AttachmentService extends UploadService
      */
     protected function getStorage()
     {
-        $storageType = config('filesystems.default');
+        $storageType = config('filesystems.attachments');
 
         // Override default location if set to local public to ensure not visible.
         if ($storageType === 'local') {
@@ -185,9 +186,9 @@ class AttachmentService extends UploadService
         $storage = $this->getStorage();
         $basePath = 'uploads/files/' . Date('Y-m-M') . '/';
 
-        $uploadFileName = str_random(16) . '.' . $uploadedFile->getClientOriginalExtension();
+        $uploadFileName = Str::random(16) . '.' . $uploadedFile->getClientOriginalExtension();
         while ($storage->exists($basePath . $uploadFileName)) {
-            $uploadFileName = str_random(3) . $uploadFileName;
+            $uploadFileName = Str::random(3) . $uploadFileName;
         }
 
         $attachmentPath = $basePath . $uploadFileName;

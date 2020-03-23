@@ -2,8 +2,6 @@
 /**
  * Activity text strings.
  * Is used for all the text within activity logs & notifications.
- * Текстові рядки активності.
- * Використовується для всього тексту в журналах активності та сповіщеннях.
  */
 return [
 
@@ -38,7 +36,7 @@ return [
     'book_sort_notification'      => 'Книгу успішно відновлено',
 
     // Bookshelves
-    'bookshelf_create'            => 'створено книжкову полицю',
+    'bookshelf_create'            => 'створив книжкову полицю',
     'bookshelf_create_notification'    => 'Книжкову полицю успішно створено',
     'bookshelf_update'                 => 'оновив книжкову полицю',
     'bookshelf_update_notification'    => 'Книжкову полицю успішно оновлено',

@@ -8,7 +8,7 @@ class LanguageTest extends TestCase
     /**
      * LanguageTest constructor.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->langs = array_diff(scandir(resource_path('lang')), ['..', '.', 'check.php', 'format.php']);
@@ -19,7 +19,7 @@ class LanguageTest extends TestCase
         $configLocales = config('app.locales');
         sort($configLocales);
         sort($this->langs);
-        $this->assertTrue(implode(':', $this->langs) === implode(':', $configLocales), 'app.locales configuration variable matches found lang files');
+        $this->assertEquals(implode(':', $configLocales), implode(':', $this->langs), 'app.locales configuration variable does not match those found in lang files');
     }
 
     public function test_correct_language_if_not_logged_in()
@@ -39,21 +39,6 @@ class LanguageTest extends TestCase
 
         $loginPageFrenchReq = $this->get('/login', ['Accept-Language' => 'fr']);
         $loginPageFrenchReq->assertDontSee('Se Connecter');
-    }
-
-    public function test_js_endpoint_for_each_language()
-    {
-
-        $visibleKeys = ['common', 'components', 'entities', 'errors'];
-
-        $this->asEditor();
-        foreach ($this->langs as $lang) {
-            setting()->putUser($this->getEditor(), 'language', $lang);
-            $transResp = $this->get('/translations');
-            foreach ($visibleKeys as $key) {
-                $transResp->assertSee($key);
-            }
-        }
     }
 
     public function test_all_lang_files_loadable()
@@ -79,32 +64,6 @@ class LanguageTest extends TestCase
         setting()->putUser($this->getEditor(), 'language', 'ar');
         $this->get('/');
         $this->assertTrue(config('app.rtl'), "App RTL config should have been set to true by middleware");
-    }
-
-    public function test_de_informal_falls_base_to_de()
-    {
-        // Base de back value
-        $deBack = trans()->get('common.cancel', [], 'de', false);
-        $this->assertEquals('Abbrechen', $deBack);
-        // Ensure de_informal has no value set
-        $this->assertEquals('common.cancel', trans()->get('common.cancel', [], 'de_informal', false));
-        // Ensure standard trans falls back to de
-        $this->assertEquals($deBack, trans('common.cancel', [], 'de_informal'));
-        // Ensure de_informal gets its own values where set
-        $deEmailActionHelp = trans()->get('common.email_action_help', [], 'de', false);
-        $enEmailActionHelp = trans()->get('common.email_action_help', [], 'en', false);
-        $deInformalEmailActionHelp = trans()->get('common.email_action_help', [], 'de_informal', false);
-        $this->assertNotEquals($deEmailActionHelp, $deInformalEmailActionHelp);
-        $this->assertNotEquals($enEmailActionHelp, $deInformalEmailActionHelp);
-    }
-
-    public function test_de_informal_falls_base_to_de_in_js_endpoint()
-    {
-        $this->asEditor();
-        setting()->putUser($this->getEditor(), 'language', 'de_informal');
-
-        $transResp = $this->get('/translations');
-        $transResp->assertSee('"cancel":"Abbrechen"');
     }
 
 }
